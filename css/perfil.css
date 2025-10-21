@@ -1,0 +1,322 @@
+/* Estilos para el botón de editar perfil */
+.edit-profile-btn {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: 1px solid white;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 20px;
+    font-family: 'The Youth', sans-serif;
+    transition: all 0.3s;
+}
+
+.edit-profile-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Estilos para el formulario de edición */
+.edit-profile-form {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 800px;
+}
+
+.edit-profile-form h2 {
+    color: white;
+    margin-bottom: 20px;
+    text-align: center;
+    font-family: 'The Youth', sans-serif;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: white;
+    margin-bottom: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #8b6b46;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-group small {
+    color: #ccc;
+    font-size: 12px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.form-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'The Youth', sans-serif;
+}
+
+.form-actions button[type="submit"] {
+    background: #8b6b46;
+    color: white;
+}
+
+.form-actions button[type="submit"]:hover {
+    background: #5c3d1e;
+}
+
+.form-actions button#cancel-edit {
+    background: #ccc;
+    color: #333;
+}
+
+/* Estilos para la sección de publicaciones del usuario */
+.user-posts-section {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    margin-top: 20px;
+}
+
+.user-posts-section h2 {
+    color: white;
+    text-align: center;
+    font-family: 'The Youth', sans-serif;
+    margin-bottom: 20px;
+}
+
+.posts-filter {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-btn {
+    background: rgba(139, 107, 70, 0.3);
+    color: white;
+    border: 1px solid #8b6b46;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: 'The Youth', sans-serif;
+    transition: all 0.3s;
+}
+
+.filter-btn.active,
+.filter-btn:hover {
+    background: #8b6b46;
+}
+
+.user-posts {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.user-post-card {
+    background: #d2b48c url('../img/beige.png') repeat;
+    border: 2px solid #8b6b46;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.user-post-header {
+    display: flex;
+}
+
+.user-post-image {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+}
+
+.user-post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-post-info {
+    padding: 10px;
+    flex: 1;
+}
+
+.user-post-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #5c3d1e;
+    font-family: 'The Youth', sans-serif;
+}
+
+.user-post-info p {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #5c3d1e;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.user-post-stats {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.user-post-stats span {
+    font-size: 12px;
+    color: #8b6b46;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.user-post-date {
+    font-size: 12px;
+    color: #8b6b46;
+}
+
+/* Estilos para la vista de comentarios */
+.comments-section {
+    padding: 20px;
+    border-top: 2px solid #8b6b46;
+    background: rgba(255, 248, 235, 0.5);
+}
+
+.comments-header h3 {
+    margin: 0 0 15px 0;
+    color: #5c3d1e;
+    font-family: 'The Youth', sans-serif;
+}
+
+.comment {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(139, 107, 70, 0.3);
+}
+
+.comment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.comment-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.comment-content {
+    flex: 1;
+}
+
+.comment-author {
+    font-weight: bold;
+    color: #5c3d1e;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.comment-text {
+    color: #5c3d1e;
+    margin-bottom: 5px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.comment-time {
+    color: #8b6b46;
+    font-size: 12px;
+}
+
+.add-comment {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.comment-input {
+    display: flex;
+    flex: 1;
+    border: 1px solid #8b6b46;
+    border-radius: 20px;
+    overflow: hidden;
+    background: white;
+}
+
+.comment-input input {
+    flex: 1;
+    border: none;
+    padding: 10px 15px;
+    outline: none;
+}
+
+.send-comment {
+    background: #8b6b46;
+    color: white;
+    border: none;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+/* Estilos para el contador de vistas en el post */
+.post-views {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    color: #8b6b46;
+    font-size: 14px;
+}
+
+.view-btn {
+    color: #5c3d1e;
+}
+
+/* Estilos para la foto de perfil editable */
+.perfil-foto {
+    position: relative;
+    cursor: pointer;
+}
+
+.edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.perfil-foto:hover .edit-overlay {
+    opacity: 1;
+}
+
+.edit-overlay i {
+    color: white;
+    font-size: 24px;
+}

@@ -1,0 +1,330 @@
+.imperial {
+    font-family: 'Imperial Script';
+  
+    font-weight:lighter;
+    font-size: 30px;
+
+
+}
+
+
+.dm-sans{
+    font-family: 'DM Sans', sans-serif;
+    font-optical-sizing: auto;
+    font-weight:normal;
+    
+  }
+
+  
+.playfair-display {
+    font-family: "Playfair Display", serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+    
+  }
+
+
+  
+body { /*Fondo*/
+    width: 100%;
+    min-height: 100vh;
+    padding: 0 15px;
+    display: flex;
+    background: #00010248;
+    background-image: url('../img/rojo.png');
+    background-size: cover;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-title{ /*letras de incio*/
+    color: rgb(10, 10, 10);
+    text-align: center;
+
+}
+
+.font1{ /*letras*/
+     font-family: "the youth";
+    font-size: 30px;
+}
+
+.font2{
+    font-family: "the youth";
+    font-size: 30px;
+}
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+    
+}
+
+
+.login_form {
+    width: 100%;
+    background: #f1f1f1;
+    border-radius: 6px;
+    padding: 41px 30px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+.login_form .login_option {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    
+}
+.login_form .login_option .option {
+    width: 200%;
+    
+}
+
+
+.login_form .login_option .option a:hover {
+    background: #ededf5;
+    border-color: #45402a;
+}
+
+.login_form .login_option .option a img {
+    max-width: 30px;
+}
+
+.login_form p {
+    text-align: center;
+    font-weight: 500;
+}
+
+.login_form .separator {
+    position: relative;
+    margin-bottom: 1px;
+}
+
+.login_form .separator span { /*cuadro de la o*/
+    background: #f1f1f1;
+    z-index: 1;
+    padding: 0 30px;
+    position: relative;
+}
+
+.login_form .separator::after { /*linea de separacion*/
+    content: '';
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    height: 1px;
+    background: #000000;
+    display: block;
+}
+
+a { /* letras registrate*/
+    text-decoration: none;
+    color: #8d2e2e;
+    font-weight: 500;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+
+form button { /* boton de iniciar*/
+    width: 100%;
+    height: 56px;
+    border-radius: 100px;
+    border: none;
+    outline: none;
+    background: #cd26269e;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-bottom: 28px;
+    transition: 0.3s ease;
+}
+
+form button:hover {
+    background: #8e8365;
+}
+
+
+.login-container { /* recuadro de atras */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 850px; 
+    height: 100%;
+    max-height: 600px;
+    background: #f1f1f1;
+    border-radius: 6px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    margin-top: 50px;
+    padding: 0;
+    font-size: 1vw;
+}
+
+@media (max-width: 300px) {
+    .login-container {
+        width: 50%; 
+        font-size: 14px; 
+        padding: 15px;
+    }
+}
+
+
+.login_form {
+    width: 50%; 
+    padding: 40px;
+    background: #f1f1f1;
+    box-shadow: none; 
+}
+
+
+.login-image {
+    width: 50%;
+    height: 100%;
+   overflow: hidden; 
+   padding: 0; 
+   margin: 0;
+}
+
+.login-image img {
+    width: 100%; 
+    height: 800px;
+    object-fit: cover; 
+    object-position: center; 
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.input-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.input-container span {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #000000;
+}
+
+.input-container input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #999;
+    background: transparent;
+    outline: none;
+    padding: 10px 0;
+    font-size: 16px;
+ 
+    color: #333;
+    transition: border-color 0.3s ease;
+}
+
+.input-container input:focus {
+    border-bottom: 2px solid #917d5f;
+}
+
+.input-container label {
+    display: none; 
+}
+
+header { /*barra de arriba*/
+    width: 100%;
+    background: rgba(17, 12, 4, 0);
+    padding: 1vw;
+    padding: 1vh;
+    position: fixed; 
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    font-size: 1.5vw; 
+    
+   z-index: 1000; 
+}
+
+.logo { /*letras tercer tiempo*/
+    display: flex;
+    align-items: center; 
+    font-size: 16px;
+    font-weight: lighter;
+    color: rgb(255, 255, 255);
+}
+
+.logo-img {
+    width: 40px; 
+    height: auto;
+    margin-right: 3px; 
+}
+
+@media (max-width: 600px) {
+    header {
+        font-size: 1vw; 
+        height: 5vh; 
+    }
+
+    .header-menu {
+        gap: 5vw; 
+    }
+}
+
+.menu ul {
+    list-style: none;
+    display: flex;
+    justify-content: right;
+    padding: 0;
+    margin: 0;
+  
+
+}
+
+.menu ul li {
+    margin: 0 8px;
+}
+
+.menu ul li a { /*registrarse y eso*/
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-family: 'Display Fair';
+    font-size: 14px;
+    font-weight: lighter;
+    padding: 10px;
+    transition: 0.3s;
+}
+
+.menu ul li a:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 0px;
+}
+
+
+.contenido {
+    margin-top: 60px; 
+    text-align:right;
+    color: white;
+    padding: 20px;
+}
+
+
+

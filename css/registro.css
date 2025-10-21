@@ -1,0 +1,452 @@
+.imperial {
+    font-family: 'Imperial Script';
+    font-weight: lighter;
+    font-size: 30px;
+}
+
+.playfair-display {
+    font-family: "Playfair Display", serif;
+    font-optical-sizing: auto;
+    font-weight: normal;
+}
+
+.font1 {
+    font-family: "the youth";
+    font-size: 30px;
+}
+
+.font2 {
+    font-family: "the youth";
+    font-size: 30px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    background: #00010248;
+    background-image: url('../img/azul.png');
+    background-size: cover;
+    justify-content: center;
+    align-items: center;
+}
+
+.registro-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.registro-container {
+    width: 100%;
+    background: #f1f1f1;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.registro-form {
+    width: 100%;
+}
+
+.registro-title {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+}
+
+.form-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-section {
+    margin-bottom: 30px;
+}
+
+.form-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-title {
+    font-family: 'Playfair Display';
+    font-size: 1.4em;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.input-group {
+    display: flex;
+    gap: 15px;
+}
+
+.input-group .input-container {
+    flex: 1;
+}
+
+.input-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.input-container input,
+.input-container select {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #bdc3c7;
+    background: transparent;
+    outline: none;
+    padding: 12px 0;
+    font-size: 16px;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+}
+
+.input-container input:focus,
+.input-container select:focus {
+    border-bottom: 2px solid #2c3e50;
+    background: rgba(44, 62, 80, 0.05);
+}
+
+.input-container label {
+    position: absolute;
+    top: 12px;
+    left: 0;
+    font-size: 16px;
+    color: #7f8c8d;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label,
+.input-container select:focus + label,
+.input-container select:valid + label {
+    top: -15px;
+    font-size: 12px;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.input-container input::placeholder {
+    color: transparent;
+}
+
+.edad-info {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
+.password-requirements {
+    margin-top: 5px;
+}
+
+.password-requirements small {
+    color: #7f8c8d;
+    font-size: 12px;
+}
+
+.password-match {
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+/* Estilos para la foto de perfil */
+.foto-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.foto-preview {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 0px;
+    border: 3px solid #1a1a1a;
+    overflow: hidden;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.foto-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../img/f2.png');
+    background-size: cover;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.foto-placeholder {
+    text-align: center;
+    color: #666;
+    z-index: 3;
+    position: relative;
+}
+
+.foto-placeholder i {
+    font-size: 40px;
+    margin-bottom: 8px;
+    display: block;
+    color: #666;
+}
+
+.foto-placeholder span {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#previewImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    position: relative;
+    z-index: 1;
+}
+
+.upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 25px;
+    background: #2c3e50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: 500;
+    border: none;
+    box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
+}
+
+.upload-btn:hover {
+    background: #34495e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(44, 62, 80, 0.4);
+}
+
+.foto-upload {
+    flex: 1;
+}
+
+.foto-upload small {
+    display: block;
+    margin-top: 8px;
+    color: #7f8c8d;
+    font-size: 12px;
+}
+
+/* Botón de registro */
+.form-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.registro-btn {
+    width: 100%;
+    max-width: 400px;
+    height: 60px;
+    border-radius: 30px;
+    border: none;
+    outline: none;
+    background: #2c3e50;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin: 20px 0;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 6px 15px rgba(44, 62, 80, 0.3);
+}
+
+.registro-btn:hover {
+    background: #34495e;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(44, 62, 80, 0.4);
+}
+
+.sign_up {
+    text-align: center;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+a {
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #34495e;
+}
+
+.error-message {
+    background: #ffeaa7;
+    color: #d63031;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    text-align: center;
+    border: 2px solid #fab1a0;
+    font-weight: 500;
+}
+
+/* Header styles */
+header {
+    width: 100%;
+    background: rgba(17, 12, 4, 0);
+    padding: 1vw;
+    position: static;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.5vw;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: lighter;
+    color: rgb(255, 255, 255);
+}
+
+.logo-img {
+    width: 40px;
+    height: auto;
+    margin-right: 3px;
+}
+
+.menu ul {
+    list-style: none;
+    display: flex;
+    justify-content: right;
+    padding: 0;
+    margin: 0;
+}
+
+.menu ul li {
+    margin: 0 8px;
+}
+
+.menu ul li a {
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    font-family: 'Playfair Display';
+    font-size: 14px;
+    font-weight: lighter;
+    padding: 10px;
+    transition: 0.3s;
+}
+
+.menu ul li a:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 0px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .registro-container {
+        max-width: 95%;
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-columns {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .input-group {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .foto-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .registro-container {
+        padding: 20px;
+        margin-top: 100px;
+    }
+    
+    header {
+        font-size: 3vw;
+        padding: 2vw;
+    }
+    
+    .registro-title {
+        font-size: 1.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .registro-wrapper {
+        margin-top: 120px;
+    }
+    
+    .registro-container {
+        padding: 15px;
+    }
+    
+    .foto-preview {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .upload-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
