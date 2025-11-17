@@ -1,34 +1,3 @@
-<?php
-session_start();
-
-// Validación básica del lado del servidor
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = $_POST['nombre'] ?? '';
-    $apellido_paterno = $_POST['apellido_paterno'] ?? '';
-    $apellido_materno = $_POST['apellido_materno'] ?? '';
-    $fecha_nacimiento = $_POST['fecha_nacimiento'] ?? '';
-    $genero = $_POST['genero'] ?? '';
-    $pais_nacimiento = $_POST['pais_nacimiento'] ?? '';
-    $nacionalidad = $_POST['nacionalidad'] ?? '';
-    $correo = $_POST['correo'] ?? '';
-    $contrasena = $_POST['contrasena'] ?? '';
-    
-    // Validar edad (mayor de 12 años)
-    $fecha_nac = new DateTime($fecha_nacimiento);
-    $hoy = new DateTime();
-    $edad = $hoy->diff($fecha_nac)->y;
-    
-    if ($edad < 12) {
-        $error_edad = "Debes ser mayor de 12 años para registrarte";
-    } else {
-        // Si pasa todas las validaciones, redirigir al perfil
-        $_SESSION['usuario'] = $nombre . ' ' . $apellido_paterno;
-        header('Location: perfil.php');
-        exit();
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -43,6 +12,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="css/registro.css">
+
+    <style>
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success-message {
+            background: #d1edff;
+            color: #0c5460;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid #bee5eb;
+        }
+        
+        .password-match.valid {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .password-match.invalid {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
 
@@ -62,8 +66,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="registro-wrapper">
     <div class="registro-container">
         <div class="registro-form">
-            <form action="registro.php" method="POST" id="formRegistro" enctype="multipart/form-data">
+            <form id="formRegistro" method="POST" enctype="multipart/form-data">
                 <p class="registro-title"><span class="font1">R</span><span class="font2">egistro de </span><span class="font1">usuario</span></p>
+                
+                <div id="messageContainer"></div>
                 
                 <div class="form-columns">
                     <!-- Columna Izquierda -->
@@ -84,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </div>
                                 
                                 <div class="input-container">
-                                    <input type="text" name="apellido_materno" id="apellido_materno" placeholder=" " required>
+                                    <input type="text" name="apellido_materno" id="apellido_materno" placeholder=" ">
                                     <label for="apellido_materno">Apellido Materno</label>
                                 </div>
                             </div>
@@ -185,7 +191,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                             <div class="input-container password-container">
                                 <input type="password" name="contrasena" id="contrasena" placeholder=" " required 
-                                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':\\|,.<>\/?]).{8,}$"
+                                       pattern="^(?=.*[a-záéíóúüñ])(?=.*[A-ZÁÉÍÓÚÜÑ])(?=.*\d)(?=.*[!@#$%^&*()_+=\-\[\]{};':|,.<>?/]).{8,}$"
                                        title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial">
                                 <label for="contrasena">Contraseña</label>
                                 <div class="password-requirements">
@@ -202,15 +208,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
 
-                <!-- Mensajes de error -->
-                <?php if (isset($error_edad)): ?>
-                    <div class="error-message">
-                        <?php echo $error_edad; ?>
-                    </div>
-                <?php endif; ?>
-
                 <div class="form-actions">
-                    <button class="registro-btn" type="submit">
+                    <button class="registro-btn" type="submit" id="submitBtn">
                         <i class="fas fa-user-plus"></i>
                         Registrarse
                     </button>
@@ -222,6 +221,104 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </div><br><br>
 
-<script src="js/registro.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formRegistro');
+    const messageContainer = document.getElementById('messageContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const originalBtnText = submitBtn.innerHTML;
+
+    // Preview de imagen
+    const fotoInput = document.getElementById('foto');
+    const previewImg = document.getElementById('previewImg');
+    const fotoPlaceholder = document.querySelector('.foto-placeholder');
+
+    fotoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                fotoPlaceholder.style.display = 'none';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Validación en tiempo real de contraseñas
+    document.getElementById('confirmar_contrasena').addEventListener('input', function() {
+        const password = document.getElementById('contrasena').value;
+        const confirmPassword = this.value;
+        const matchElement = document.getElementById('passwordMatch');
+        
+        if (confirmPassword === '') {
+            matchElement.innerHTML = '';
+            matchElement.className = 'password-match';
+        } else if (password === confirmPassword) {
+            matchElement.innerHTML = '✓ Las contraseñas coinciden';
+            matchElement.className = 'password-match valid';
+        } else {
+            matchElement.innerHTML = '✗ Las contraseñas no coinciden';
+            matchElement.className = 'password-match invalid';
+        }
+    });
+
+    // Manejo del envío del formulario
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Mostrar loading
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
+        submitBtn.disabled = true;
+        form.classList.add('loading');
+        
+        const formData = new FormData(form);
+        
+        fetch('procesar_registro.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error de red');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                showMessage(data.message, 'success');
+                setTimeout(() => {
+                    window.location.href = data.redirect;
+                }, 2000);
+            } else {
+                let errorMessage = 'Errores encontrados:<br>' + data.errors.join('<br>');
+                showMessage(errorMessage, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showMessage('Error al procesar el registro. Intenta nuevamente.', 'error');
+        })
+        .finally(() => {
+            // Restaurar botón
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+            form.classList.remove('loading');
+        });
+    });
+
+    function showMessage(message, type) {
+        messageContainer.innerHTML = `
+            <div class="${type === 'error' ? 'error-message' : 'success-message'}">
+                ${message}
+            </div>
+        `;
+        
+        // Hacer scroll al mensaje
+        messageContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+});
+</script>
 </body>
 </html>
