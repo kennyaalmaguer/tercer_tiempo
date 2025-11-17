@@ -1,322 +1,873 @@
-/* Estilos para el botón de editar perfil */
-.edit-profile-btn {
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: 1px solid white;
-    padding: 8px 16px;
-    cursor: pointer;
-    margin-left: auto;
-    margin-right: 20px;
-    font-family: 'The Youth', sans-serif;
-    transition: all 0.3s;
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url("../img/verde.png");
 }
 
-.edit-profile-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
 
-/* Estilos para el formulario de edición */
-.edit-profile-form {
-    background: rgba(0, 0, 0, 0.7);
-    padding: 30px;
-    border-radius: 10px;
-    margin: 20px auto;
-    max-width: 800px;
-}
-
-.edit-profile-form h2 {
-    color: white;
-    margin-bottom: 20px;
-    text-align: center;
-    font-family: 'The Youth', sans-serif;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    color: white;
-    margin-bottom: 5px;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
+header { 
+    position: absolute;
+    top: -33px;
     width: 100%;
-    padding: 10px;
-    border: 1px solid #8b6b46;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 5px;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.form-group small {
-    color: #ccc;
-    font-size: 12px;
-}
-
-.form-actions {
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.form-actions button {
+    justify-content: space-between;
+    align-items: center;
     padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'The Youth', sans-serif;
-}
-
-.form-actions button[type="submit"] {
-    background: #8b6b46;
+    background: rgba(0, 0, 0, 0);
     color: white;
-}
-
-.form-actions button[type="submit"]:hover {
-    background: #5c3d1e;
-}
-
-.form-actions button#cancel-edit {
-    background: #ccc;
-    color: #333;
-}
-
-/* Estilos para la sección de publicaciones del usuario */
-.user-posts-section {
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    margin-top: 20px;
-}
-
-.user-posts-section h2 {
-    color: white;
-    text-align: center;
     font-family: 'The Youth', sans-serif;
-    margin-bottom: 20px;
-}
+    font-size: 25px;
+    position: fixed;
+    z-index: 0;
+} 
 
-.posts-filter {
+header nav { 
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+    gap: 15px;
+} 
 
-.filter-btn {
-    background: rgba(139, 107, 70, 0.3);
+header nav a { 
+    font-size: 20px;
+    line-height: -10px;
     color: white;
-    border: 1px solid #8b6b46;
-    padding: 8px 16px;
-    cursor: pointer;
-    font-family: 'The Youth', sans-serif;
-    transition: all 0.3s;
+    text-decoration: none;
+} 
+
+
+.fportada {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    background-image: url("../img/back2.jpg");
+    background-size: cover;
+    background-position: center;
+    font-size: 40px;
 }
 
-.filter-btn.active,
-.filter-btn:hover {
-    background: #8b6b46;
+.fportada::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("../img/f2.png");
+    background-size: cover;
+    opacity: 0.3;
+    pointer-events: none;
 }
 
-.user-posts {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+.perfil-container {
+    position: absolute;
+    bottom: -75px;
+    left: 30px;
+    display: flex;
+    align-items: flex-start;
     gap: 20px;
+    z-index: 10;
 }
 
-.user-post-card {
-    background: #d2b48c url('../img/beige.png') repeat;
-    border: 2px solid #8b6b46;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-.user-post-header {
-    display: flex;
-}
-
-.user-post-image {
-    width: 100px;
-    height: 100px;
-    overflow: hidden;
-}
-
-.user-post-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.user-post-info {
-    padding: 10px;
-    flex: 1;
-}
-
-.user-post-info h3 {
-    margin: 0 0 5px 0;
-    font-size: 16px;
-    color: #5c3d1e;
-    font-family: 'The Youth', sans-serif;
-}
-
-.user-post-info p {
-    margin: 0 0 10px 0;
-    font-size: 14px;
-    color: #5c3d1e;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.user-post-stats {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 5px;
-}
-
-.user-post-stats span {
-    font-size: 12px;
-    color: #8b6b46;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-}
-
-.user-post-date {
-    font-size: 12px;
-    color: #8b6b46;
-}
-
-/* Estilos para la vista de comentarios */
-.comments-section {
-    padding: 20px;
-    border-top: 2px solid #8b6b46;
-    background: rgba(255, 248, 235, 0.5);
-}
-
-.comments-header h3 {
-    margin: 0 0 15px 0;
-    color: #5c3d1e;
-    font-family: 'The Youth', sans-serif;
-}
-
-.comment {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(139, 107, 70, 0.3);
-}
-
-.comment-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.comment-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.comment-content {
-    flex: 1;
-}
-
-.comment-author {
-    font-weight: bold;
-    color: #5c3d1e;
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-
-.comment-text {
-    color: #5c3d1e;
-    margin-bottom: 5px;
-    font-size: 14px;
-    line-height: 1.4;
-}
-
-.comment-time {
-    color: #8b6b46;
-    font-size: 12px;
-}
-
-.add-comment {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.comment-input {
-    display: flex;
-    flex: 1;
-    border: 1px solid #8b6b46;
-    border-radius: 20px;
-    overflow: hidden;
-    background: white;
-}
-
-.comment-input input {
-    flex: 1;
-    border: none;
-    padding: 10px 15px;
-    outline: none;
-}
-
-.send-comment {
-    background: #8b6b46;
-    color: white;
-    border: none;
-    padding: 0 15px;
-    cursor: pointer;
-}
-
-/* Estilos para el contador de vistas en el post */
-.post-views {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-left: auto;
-    color: #8b6b46;
-    font-size: 14px;
-}
-
-.view-btn {
-    color: #5c3d1e;
-}
-
-/* Estilos para la foto de perfil editable */
 .perfil-foto {
     position: relative;
-    cursor: pointer;
+    width: 150px;
+    height: 150px;
+    border-radius: 0px;
+    overflow: hidden;
 }
 
-.edit-overlay {
+.perfil-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.perfil-foto::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("../img/f2.png");
+    background-size: cover;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+
+.perfil-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+/* Nombre */
+.perfil-nombre {
+    font-size: 24px;
+    text-transform: lowercase;
+    color: rgb(255, 255, 255);
+    z-index: 20;
+    font-family: 'The Youth', sans-serif;
+    margin-top: 0px;
+}
+
+/* Descripción */
+.perfil-descripcion {
+    font-size: 15px;
+    color: white;
+    font-family:Arial, Helvetica, sans-serif ;
+    margin: 0 0 10px 0;
+}
+
+/* Lista de datos */
+.perfil-datos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    color: white;
+    font-size: 14px;
+    font-family:Arial, Helvetica, sans-serif ;
+    display: flex;
+    gap: 15px;
+}
+
+.perfil-datos li {
+    display: flex;
+    align-items: center;
+}
+
+/* Separador entre elementos de datos */
+.perfil-datos li:not(:last-child)::after {
+    content: "•";
+    margin-left: 15px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Segunda sección */
+.segunda-seccion {
+    background-image: url("../img/negro.png");
+    color: white;
+    padding: 50px;
+    font-family: 'The Youth', sans-serif;
+    margin-top: -10px;
+}
+
+/* Sección de publicaciones */
+.post-sec {
+    /*background-image: url("img/verde.png");*/
+    color: white;
+    padding: 20px;
+    font-family: 'The Youth', sans-serif;
+    text-transform: lowercase;
+    text-align: center;
+}
+
+
+/* Estilos para el post tipo carta - estilo beige/café */
+.post-carta {
+    background: #d2b48c url('../img/beige.png') repeat;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 900px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #8b6b46;
+    position: relative;
+    margin: 0 auto;
+   
+}
+
+.post-header {
+    padding: 20px;
+    border-bottom: 2px solid #8b6b46;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(139, 107, 70, 0.1);
+}
+
+.post-avatar {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border: 2px solid #8b6b46;
+}
+
+.post-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post-author {
+    font-weight: bold;
+    font-size: 16px;
+    color: #5c3d1e;
+}
+
+.post-time {
+    color: #8b6b46;
+    font-size: 14px;
+    margin-left: auto;
+}
+
+.post-content {
+    display: flex;
+    padding: 0;
+    min-height: 300px;
+}
+
+.post-image {
+    flex: 4;
+    overflow: hidden;
+    position: relative;
+    border-right: 2px solid #8b6b46;
+}
+
+.post-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(210, 180, 140, 0.3), transparent);
+}
+
+.post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.post-text {
+    flex: 6;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.post-title {
+    font-size: 24px;
+    margin: 0 0 20px 0;
+    color: #5c3d1e;
+    font-family: 'The Youth', sans-serif;
+    letter-spacing: 1px;
+}
+
+.post-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #5c3d1e;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    border-top: 2px solid #8b6b46;
+    background: rgba(139, 107, 70, 0.1);
+}
+
+.post-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    color: #5c3d1e;
+}
+
+.post-action:hover {
+    background-color: rgba(139, 107, 70, 0.2);
+}
+
+.action-icon {
+    font-size: 18px;
+}
+
+.action-count {
+    font-size: 16px;
+}
+
+.like-btn {
+    color: #5c3d1e;
+}
+
+.like-btn.active {
+    color: #c52c28;
+}
+
+.like-btn.active .action-icon {
+    animation: pulse 0.5s;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+.comment-btn {
+    color: #5c3d1e;
+}
+
+.share-btn {
+    color: #5c3d1e;
+}
+
+/* Efecto de papel para la carta */
+.post-carta::before {
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.03"><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"></feTurbulence></filter><rect width="100" height="100" filter="url(%23grain)"></rect></svg>');
+    pointer-events: none;
+    opacity: 0.2;
+    z-index: 1;
+}
+
+/* Borde decorativo */
+.post-carta::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 1px solid rgba(139, 107, 70, 0.3);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .post-content {
+        flex-direction: column;
+    }
+    
+    .post-image {
+        height: 200px;
+        border-right: none;
+        border-bottom: 2px solid #8b6b46;
+    }
+    
+    .perfil-container {
+        flex-direction: column;
+        align-items: flex-start;
+        left: 15px;
+    }
+    
+    header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    header nav {
+        justify-content: center;
+    }
+    
+    .post-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+
+.create-post-sec {
+    
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.create-post-container {
+    width: 100%;
+    max-width: 800px;
+}
+
+.create-post-box {
+    background: #d2b48c url('../img/beige.png') repeat;
+    border: 2px solid #8b6b46;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.create-post-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #8b6b46;
+}
+
+.create-post-avatar {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border: 2px solid #8b6b46;
+}
+
+.create-post-avatar img {
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    object-fit: cover;
+}
+
+.create-post-input {
+    flex-grow: 1;
+}
+
+.create-post-input textarea {
+    width: 100%;
+    background: rgba(255, 248, 235, 0.7);
+    border: 1px solid #8b6b46;
+    padding: 12px;
+    color: #5c3d1e;
+    font-family: Arial, Helvetica, sans-serif;
+    resize: none;
+    min-height: 60px;
+    outline: none;
+}
+
+.create-post-input textarea::placeholder {
+    color: #8b6b46;
+}
+
+.create-post-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.post-options {
+    display: flex;
+    gap: 15px;
+}
+
+.option-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: rgba(139, 107, 70, 0.2);
+    color: #5c3d1e;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.option-btn:hover {
+    background: rgba(139, 107, 70, 0.3);
+}
+
+.option-icon {
+    font-size: 16px;
+}
+
+.publish-btn {
+    background: #8b6b46;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-family: 'The Youth', sans-serif;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-transform: lowercase;
+}
+
+.publish-btn:hover {
+    background: #5c3d1e;
+}
+
+/* Preview de imagen */
+.image-preview {
+    margin-top: 15px;
+    display: none;
+    position: relative;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border: 1px solid #8b6b46;
+}
+
+.remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
+}  
 
-.perfil-foto:hover .edit-overlay {
-    opacity: 1;
-}
+   
+        .edit-profile-btn {
+            background: rgba(0, 0, 0, 0.232);
+            color: white;
+            border: 1px solid white;
+            padding: 1px 16px;
+            cursor: pointer;
+            margin-left: auto;
+            margin-right: 20px;
+            font-family: 'The Youth', sans-serif;
+            transition: all 0.3s;
+            text-transform: lowercase;
+            border-radius: 10px;
+            font-size: 14px;
+        }
 
-.edit-overlay i {
-    color: white;
-    font-size: 24px;
-}
+        .edit-profile-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Estilos para el formulario de edición */
+        .edit-profile-form {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .edit-profile-form h2 {
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+            font-family: 'The Youth', sans-serif;
+            text-transform: lowercase;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: white;
+            margin-bottom: 5px;
+            font-family: 'The Youth', sans-serif;
+            text-transform: lowercase;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-bottom: 1px solid #8b6b46;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-bottom-color: white;
+        }
+
+        .form-group small {
+            color: #ccc;
+            font-size: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'The Youth', sans-serif;
+            text-transform: lowercase;
+        }
+
+        .form-actions button[type="submit"] {
+            background: #8b6b46;
+            color: white;
+        }
+
+        .form-actions button[type="submit"]:hover {
+            background: #5c3d1e;
+        }
+
+        .form-actions button#cancel-edit {
+            background: #ccc;
+            color: #333;
+        }
+
+        /* Estilos para la sección de publicaciones del usuario */
+        .user-posts-section {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            margin-top: 20px;
+        }
+
+        .user-posts-section h2 {
+            color: white;
+            text-align: center;
+            font-family: 'The Youth', sans-serif;
+            margin-bottom: 20px;
+            text-transform: lowercase;
+        }
+
+        .posts-filter {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            background: rgba(139, 107, 70, 0.3);
+            color: white;
+            border: 1px solid #8b6b46;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-family: 'The Youth', sans-serif;
+            transition: all 0.3s;
+            text-transform: lowercase;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: #8b6b46;
+        }
+
+        .user-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .user-post-card {
+            background: #d2b48c url('../img/beige.png') repeat;
+            border: 2px solid #8b6b46;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .user-post-header {
+            display: flex;
+        }
+
+        .user-post-image {
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+        }
+
+        .user-post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-post-info {
+            padding: 10px;
+            flex: 1;
+        }
+
+        .user-post-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            color: #5c3d1e;
+            font-family: 'The Youth', sans-serif;
+            text-transform: lowercase;
+        }
+
+        .user-post-info p {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #5c3d1e;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .user-post-stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .user-post-stats span {
+            font-size: 12px;
+            color: #8b6b46;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .user-post-date {
+            font-size: 12px;
+            color: #8b6b46;
+        }
+
+        /* Estilos para la vista de comentarios */
+        .comments-section {
+            padding: 20px;
+            border-top: 2px solid #8b6b46;
+            background: rgba(255, 248, 235, 0.5);
+        }
+
+        .comments-header h3 {
+            margin: 0 0 15px 0;
+            color: #5c3d1e;
+            font-family: 'The Youth', sans-serif;
+            text-transform: lowercase;
+        }
+
+        .comment {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(139, 107, 70, 0.3);
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: #5c3d1e;
+            margin-bottom: 5px;
+            font-size: 14px;
+            text-transform: lowercase;
+        }
+
+        .comment-text {
+            color: #5c3d1e;
+            margin-bottom: 5px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .comment-time {
+            color: #8b6b46;
+            font-size: 12px;
+        }
+
+        .add-comment {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .comment-input {
+            display: flex;
+            flex: 1;
+            border: 1px solid #8b6b46;
+            border-radius: 20px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .comment-input input {
+            flex: 1;
+            border: none;
+            padding: 10px 15px;
+            outline: none;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .send-comment {
+            background: #8b6b46;
+            color: white;
+            border: none;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+
+        /* Estilos para el contador de vistas en el post */
+        .post-views {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 15px;
+            color: #8b6b46;
+            font-size: 14px;
+        }
+
+        .view-btn {
+            color: #5c3d1e;
+        }
+
+        /* Estilos para la foto de perfil editable */
+        .perfil-foto {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .edit-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .perfil-foto:hover .edit-overlay {
+            opacity: 1;
+        }
+
+        .edit-overlay i {
+            color: white;
+            font-size: 24px;
+        }
+        
+        /* Ajustes para texto en minúsculas */
+        .perfil-nombre, 
+        .perfil-descripcion, 
+        .perfil-datos,
+        .post-author,
+        .post-time,
+        .post-title,
+        .post-description,
+        .action-count,
+        .user-posts-section h2,
+        .filter-btn {
+            text-transform: lowercase;
+        }

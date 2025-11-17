@@ -39,44 +39,61 @@
 <br>
 
 <div class="login-container">
-    <div class="login_form">
-        <form action="procesar_login.php" method="POST">
-            <p class="login-title"><span class="font1">I</span><span class="font2">nicio</span> <span class="font1">sesión</span></p><br>
+  <form id="loginForm" method="POST">
+    <p class="login-title"><span class="font1">I</span><span class="font2">nicio</span> <span class="font1">sesión</span></p><br>
 
-            <div class="input-container">
-                <span class="playfair-display">CORREO ELECTRONICO</span>
-                <input type="email" name="email" id="email" placeholder=" " required>
-                <label for="email">Correo Electrónico</label>
-            </div>
-          
-            <div class="input-container">
-                <span class="playfair-display">CONTRASEÑA</span>
-                <input type="password" name="password" id="password" placeholder=" " required>
-                <label for="password">Contraseña</label>
-            </div>
-
-            <button class="playfair-display" type="submit"><a href="perfil.php">Iniciar Sesión</a></button>
-
-            <p class="separator">
-                <span class="playfair-display">ó</span>
-            </p>
-            <div class="login_option">
-                <div class="option">
-                    <a href="">
-                       
-                    </a>
-                </div>
-            </div>
-
-            <p class="sign_up">¿No tienes un cuenta? <a href="registro.php">Registrate</a></p>
-        </form>
+    <div class="input-container">
+        <span class="playfair-display">CORREO ELECTRONICO</span>
+        <input type="email" name="email" id="email" placeholder=" " required>
+        <label for="email">Correo Electrónico</label>
     </div>
+  
+    <div class="input-container">
+        <span class="playfair-display">CONTRASEÑA</span>
+        <input type="password" name="password" id="password" placeholder=" " required>
+        <label for="password">Contraseña</label>
+    </div>
+
+    <button class="playfair-display" type="submit">Iniciar Sesión</button>
+
+    <p class="separator">
+        <span class="playfair-display">ó</span>
+    </p>
+
+    <p class="sign_up">¿No tienes un cuenta? <a href="registro.php">Registrate</a></p>
+</form>
+
+
   <div class="login-image">
         <img src="img/principal3.jpg" alt="Imagen de inicio de sesión">
     </div>
   
     </div>
 </div>
-
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('procesar_login.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Redirigir al perfil
+            window.location.href = data.redirect;
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al procesar el login');
+    });
+});
+</script>
 </body>
 </html>
