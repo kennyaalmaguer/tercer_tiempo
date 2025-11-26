@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,265 +11,275 @@
     <link rel="stylesheet" href="css/styles.css">
     <style>
         /* Estilos para la sección de Mundiales */
-        .mundiales-section {
-            background: #0066b3;
-            padding: 60px 40px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
+    .mundiales-section {
+        background: #0066b3;
+        padding: 60px 40px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
 
-        .mundiales-section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url('img/f2.png');
-            background-size: cover;
-            opacity: 0.1;
-            pointer-events: none;
-        }
+    .mundiales-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url('img/f2.png');
+        background-size: cover;
+        opacity: 0.1;
+        pointer-events: none;
+    }
 
+    .mundiales-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .filtros-mundiales {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .filtro-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-family: 'The Youth', sans-serif;
+        transition: all 0.3s;
+        text-transform: lowercase;
+        font-size: 14px;
+    }
+
+    .filtro-btn.active,
+    .filtro-btn:hover {
+        background: #FFD700;
+        color: #0066b3;
+    }
+
+    .mundiales-container {
+        position: relative;
+        overflow: hidden;
+        padding: 10px 0;
+    }
+
+    .mundiales-slider {
+        display: flex;
+        transition: transform 0.5s ease;
+        gap: 20px;
+    }
+
+    .mundial-card {
+        flex: 0 0 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative;
+    }
+
+    .mundial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .mundial-imagen {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .mundial-imagen img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+
+    .mundial-card:hover .mundial-imagen img {
+        transform: scale(1.05);
+    }
+
+    .mundial-logo {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 50px;
+        height: 50px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        overflow: hidden; /* IMPORTANTE para recortar bien el logo */
+    }
+
+    .mundial-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Hace que el logo llene el círculo */
+        border-radius: 50%; /* Asegura que quede circular */
+    }
+
+    .mundial-info {
+        padding: 20px;
+    }
+
+    .mundial-nombre {
+        font-family: 'The Youth', sans-serif;
+        font-size: 20px;
+        margin-bottom: 5px;
+        color: #FFD700;
+        text-transform: lowercase;
+    }
+
+    .mundial-detalles {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #cccccc;
+    }
+
+    .mundial-descripcion {
+        font-size: 14px;
+        line-height: 1.4;
+        margin-bottom: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .mundial-stats {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #cccccc;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .stat {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .publicaciones-count {
+        background: rgba(255, 215, 0, 0.2);
+        border: 1px solid rgba(255, 215, 0, 0.4);
+        border-radius: 15px;
+        padding: 5px 12px;
+        font-size: 12px;
+        color: #FFD700;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 10px;
+    }
+
+    .ver-mas-btn {
+        background: #FFD700;
+        color: #0066b3;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-family: 'The Youth', sans-serif;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        text-transform: lowercase;
+        font-size: 14px;
+    }
+
+    .ver-mas-btn:hover {
+        background: white;
+    }
+
+    .slider-controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .slider-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .slider-btn:hover {
+        background: #FFD700;
+        color: #0066b3;
+    }
+
+    .slider-dots {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .slider-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .slider-dot.active {
+        background: #FFD700;
+    }
+
+    @media (max-width: 768px) {
         .mundiales-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
+            flex-direction: column;
+            align-items: flex-start;
         }
-
+        
         .filtros-mundiales {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            width: 100%;
+            justify-content: center;
         }
-
-        .filtro-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'The Youth', sans-serif;
-            transition: all 0.3s;
-            text-transform: lowercase;
-            font-size: 14px;
-        }
-
-        .filtro-btn.active,
-        .filtro-btn:hover {
-            background: #FFD700;
-            color: #0066b3;
-        }
-
-        .mundiales-container {
-            position: relative;
-            overflow: hidden;
-            padding: 10px 0;
-        }
-
-        .mundiales-slider {
-            display: flex;
-            transition: transform 0.5s ease;
-            gap: 20px;
-        }
-
+        
         .mundial-card {
-            flex: 0 0 300px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
+            flex: 0 0 280px;
         }
 
-        .mundial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
+         .mundial-nombre {
+        font-family: 'The Youth', sans-serif;
+        font-size: 5px;
+        margin-bottom: 5px;
+        color: #FFD700;
+        text-transform: lowercase;
+    }
+    }
 
-        .mundial-imagen {
-            width: 100%;
-            height: 180px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .mundial-imagen img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-
-        .mundial-card:hover .mundial-imagen img {
-            transform: scale(1.05);
-        }
-
-        .mundial-logo {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 50px;
-            height: 50px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .mundial-logo img {
-            width: 70%;
-            height: 70%;
-            object-fit: contain;
-        }
-
-        .mundial-info {
-            padding: 20px;
-        }
-
-        .mundial-nombre {
-            font-family: 'The Youth', sans-serif;
-            font-size: 20px;
-            margin-bottom: 5px;
-            color: #FFD700;
-            text-transform: lowercase;
-        }
-
-        .mundial-detalles {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #cccccc;
-        }
-
-        .mundial-descripcion {
-            font-size: 14px;
-            line-height: 1.4;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .mundial-stats {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #cccccc;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        .stat {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .publicaciones-count {
-            background: rgba(255, 215, 0, 0.2);
-            border: 1px solid rgba(255, 215, 0, 0.4);
-            border-radius: 15px;
-            padding: 5px 12px;
-            font-size: 12px;
-            color: #FFD700;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-
-        .ver-mas-btn {
-            background: #FFD700;
-            color: #0066b3;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-family: 'The Youth', sans-serif;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            text-transform: lowercase;
-            font-size: 14px;
-        }
-
-        .ver-mas-btn:hover {
-            background: white;
-        }
-
-        .slider-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .slider-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .slider-btn:hover {
-            background: #FFD700;
-            color: #0066b3;
-        }
-
-        .slider-dots {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .slider-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .slider-dot.active {
-            background: #FFD700;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .mundiales-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .filtros-mundiales {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .mundial-card {
-                flex: 0 0 280px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -277,14 +290,20 @@
                 <p>Tt</p>
             </div>
 
-            <div class="search-bar">
-                <input type="text" placeholder="buscar...">
-            </div>
+            
 
             <nav>
-                <a href="publicaciones.php">publicaciones</a>
-                <a href="registro.php">registro</a>
-                <a href="login.php">log in</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <!-- Mostrar cuando el usuario ESTÁ logueado -->
+                    <a href="publicaciones.php">publicaciones</a>
+                    <a href="perfil.php">perfil</a>
+                    <a href="logout.php">cerrar sesión</a>
+                <?php else: ?>
+                    <!-- Mostrar cuando el usuario NO está logueado -->
+                    <a href="publicaciones.php">publicaciones</a>
+                    <a href="registro.php">registro</a>
+                    <a href="login.php">log in</a>
+                <?php endif; ?>
             </nav>
         </header>
         
@@ -294,11 +313,11 @@
     </div>
 
     <div class="azul-section">
-        <img src="img/mundial.png" alt="mundial" class="llama-mundial">
-        <img src="img/azul2.png" alt="Fondo azul" class="fondo-azul">
+      
         
         <div class="mundial-content">
             <h2 class="mundial-title">mundial de fútbol 2026</h2>
+            
             <p class="mundial-subtitle">Vive la emoción del torneo más grande del planeta. 48 selecciones, 3 países anfitriones y una pasión que une al mundo.</p>
             
             <div class="mundial-stats">
@@ -320,7 +339,7 @@
         </div>
     </div>
 
-    <!-- Nueva sección de Mundiales -->
+    <!-- MUNDIALES -->
     <div class="mundiales-section">
         <div class="mundiales-header">
             <h2 class="section-title">mundiales históricos</h2>

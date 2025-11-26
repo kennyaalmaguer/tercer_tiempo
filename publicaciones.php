@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,28 +14,29 @@
 </head>
 <body>
 
+<header>
+    <div class="nav-item">
+        <?php echo "<p>Tt</p>"; ?>
+    </div>
 
+    <div class="search-bar">
+        <input type="text" placeholder="buscar...">
+    </div>
 
- <header>
- 
-            <div class="nav-item">
-                <?php echo "<p>Tt</p>"; ?>
-            </div>
-
-             <div class="search-bar">
-                <input type="text" placeholder="buscar...">
-             </div>
-
-            <nav>
-
-                <a href="publicaciones.php">publicaciones</a>
-                <a href="registro.php">registro</a>
-                <a href="login.php">log in</a>
-            </nav>
-
-        </header>
-
- 
+    <nav>
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <!-- Mostrar cuando el usuario ESTÁ logueado -->
+            <a href="index.php">inicio</a>
+            <a href="perfil.php">perfil</a>
+            <a href="logout.php">cerrar sesión</a>
+        <?php else: ?>
+            <!-- Mostrar cuando el usuario NO está logueado -->
+            <a href="publicaciones.php">publicaciones</a>
+            <a href="registro.php">registro</a>
+            <a href="login.php">log in</a>
+        <?php endif; ?>
+    </nav>
+</header>
 
 <!-- segunda sección -->
 <section class="segunda-seccion">
