@@ -4,7 +4,9 @@ class Usuario {
     private $table_name = "usuarios";
 
     public $id_usuario;
-    public $nombre_completo;
+    public $nombres; 
+    public $apellido_paterno; 
+    public $apellido_materno;
     public $fecha_nacimiento;
     public $foto;
     public $genero;
@@ -36,27 +38,28 @@ class Usuario {
             // Hash de la contraseña
             $hashed_password = password_hash($this->password, PASSWORD_DEFAULT);
 
-            // Insertar usuario
             $query = "INSERT INTO " . $this->table_name . " 
-                     (nombre_completo, fecha_nacimiento, genero, pais_nacimiento, nacionalidad, email, password, foto) 
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                     (nombres, apellido_paterno, apellido_materno, fecha_nacimiento, genero, pais_nacimiento, nacionalidad, email, password, rol, activo)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             $stmt = $this->conn->prepare($query);
             
-            $stmt->bindParam(1, $this->nombre_completo);
-            $stmt->bindParam(2, $this->fecha_nacimiento);
-            $stmt->bindParam(3, $this->genero);
-            $stmt->bindParam(4, $this->pais_nacimiento);
-            $stmt->bindParam(5, $this->nacionalidad);
-            $stmt->bindParam(6, $this->email);
-            $stmt->bindParam(7, $hashed_password);
+            $stmt->bindParam(1, $this->nombres);
+            $stmt->bindParam(2, $this->apellido_paterno);
+            $stmt->bindParam(3, $this->apellido_materno);
+            $stmt->bindParam(4, $this->fecha_nacimiento);
+            $stmt->bindParam(5, $this->genero);
+            $stmt->bindParam(6, $this->pais_nacimiento);
+            $stmt->bindParam(7, $this->nacionalidad);
+            $stmt->bindParam(8, $this->email);
+            $stmt->bindParam(9, $hashed_password);
             
             // Manejar la foto (puede ser null)
             if ($this->foto) {
-                $stmt->bindParam(8, $this->foto, PDO::PARAM_LOB);
+                $stmt->bindParam(10, $this->foto, PDO::PARAM_LOB);
             } else {
                 $null = null;
-                $stmt->bindParam(8, $null, PDO::PARAM_NULL);
+                $stmt->bindParam(10, $null, PDO::PARAM_NULL);
             }
 
             if ($stmt->execute()) {
@@ -74,9 +77,9 @@ class Usuario {
     // Login de usuario
     public function login() {
         try {
-            $query = "SELECT id_usuario, nombre_completo, email, password, rol, foto, activo 
-                      FROM " . $this->table_name . " 
-                      WHERE email = ? AND activo = 1 LIMIT 1";
+                        $query = "SELECT id_usuario, nombres, apellido_paterno, apellido_materno, email, password, rol, foto, activo 
+                                FROM " . $this->table_name . " 
+                                WHERE email = ? AND activo = 1 LIMIT 1";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, $this->email);
             $stmt->execute();
@@ -87,7 +90,11 @@ class Usuario {
                 // Verificar contraseña
                 if (password_verify($this->password, $row['password'])) {
                     $this->id_usuario = $row['id_usuario'];
-                    $this->nombre_completo = $row['nombre_completo'];
+                    $this->nombres = $row['nombres'];
+                    $this->apellido_paterno = $row['apellido_paterno'];
+                    $this->apellido_materno = $row['apellido_materno'];
+                  
+                    $this->nombre_completo = trim($this->nombres . ' ' . $this->apellido_paterno . ' ' . $this->apellido_materno);
                     $this->email = $row['email'];
                     $this->rol = $row['rol'];
                     $this->foto = $row['foto'];
@@ -97,7 +104,10 @@ class Usuario {
                         "message" => "Login exitoso",
                         "usuario" => array(
                             "id" => $this->id_usuario,
-                            "nombre" => $this->nombre_completo,
+                            "nombres" => $this->nombres,
+                            "apellido_paterno" => $this->apellido_paterno,
+                            "apellido_materno" => $this->apellido_materno,
+                            "nombre_completo" => $this->nombre_completo,
                             "email" => $this->email,
                             "rol" => $this->rol,
                             "foto" => $this->foto
@@ -117,26 +127,29 @@ class Usuario {
 
     // Validar requisitos de contraseña
     public static function validarPassword($password) {
-        $errors = array();
-        
-        if (strlen($password) < 8) {
-            $errors[] = "La contraseña debe tener al menos 8 caracteres";
-        }
-        if (!preg_match('/[A-Z]/', $password)) {
-            $errors[] = "La contraseña debe tener al menos una letra mayúscula";
-        }
-        if (!preg_match('/[a-z]/', $password)) {
-            $errors[] = "La contraseña debe tener al menos una letra minúscula";
-        }
-        if (!preg_match('/[0-9]/', $password)) {
-            $errors[] = "La contraseña debe tener al menos un número";
-        }
-        if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $password)) {
-            $errors[] = "La contraseña debe tener al menos un carácter especial";
-        }
-        
-        return $errors;
+    $errors = array();
+
+    if (strlen($password) < 8) {
+        $errors[] = "La contraseña debe tener al menos 8 caracteres";
     }
+    if (!preg_match('/[A-ZÁÉÍÓÚÜÑ]/u', $password)) {
+        $errors[] = "La contraseña debe tener al menos una letra mayúscula";
+    }
+    if (!preg_match('/[a-záéíóúüñ]/u', $password)) {
+        $errors[] = "La contraseña debe tener al menos una letra minúscula";
+    }
+    if (!preg_match('/\d/', $password)) {
+        $errors[] = "La contraseña debe tener al menos un número";
+    }
+
+    // ACEPTA cualquier símbolo, emoji o caracter especial
+    if (!preg_match('/[\W_]/u', $password)) {
+        $errors[] = "La contraseña debe tener al menos un carácter especial";
+    }
+
+    return $errors;
+}
+
 
     // Validar edad (mínimo 12 años)
     public static function validarEdad($fecha_nacimiento) {

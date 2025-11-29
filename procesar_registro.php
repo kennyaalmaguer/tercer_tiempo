@@ -116,13 +116,15 @@ try {
         }
 
         // Construir nombre completo
-        $nombre_completo = $nombre . ' ' . $apellido_paterno;
+       /* $nombre_completo = $nombre . ' ' . $apellido_paterno;
         if (!empty($apellido_materno)) {
             $nombre_completo .= ' ' . $apellido_materno;
-        }
+        }*/
 
         // Asignar propiedades del usuario
-        $usuario->nombre_completo = $nombre_completo;
+        $usuario->nombres = $nombre;
+        $usuario->apellido_paterno = $apellido_paterno;
+        $usuario->apellido_materno = $apellido_materno;
         $usuario->fecha_nacimiento = $fecha_nacimiento;
         $usuario->genero = $genero;
         $usuario->pais_nacimiento = $pais_nacimiento;

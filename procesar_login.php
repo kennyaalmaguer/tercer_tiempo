@@ -25,7 +25,7 @@ try {
     $password = $_POST['password'];
     
     // Buscar usuario - CONSULTA CORREGIDA para obtener todos los datos necesarios
-    $query = "SELECT id_usuario, nombre_completo, fecha_nacimiento, foto, genero, pais_nacimiento, nacionalidad, email, password, rol, activo FROM usuarios WHERE email = ?";
+    $query = "SELECT id_usuario, nombres, apellido_paterno, apellido_materno, fecha_nacimiento, foto, genero, pais_nacimiento, nacionalidad, email, password, rol, activo FROM usuarios WHERE email = ?";
     $stmt = $db->prepare($query);
     $stmt->execute([$email]);
     
@@ -37,11 +37,13 @@ try {
                 // Configurar sesión CON TODOS LOS DATOS
                 $_SESSION['user_id'] = $user['id_usuario'];
                 $_SESSION['user_email'] = $user['email'];
-                $_SESSION['user_name'] = $user['nombre_completo'];
+                $_SESSION['user_name'] = $user['nombres'] . ' ' . $user['apellido_paterno'] . ' ' . $user['apellido_materno'];
                 $_SESSION['user_role'] = $user['rol'];
                 
                 // Nuevos campos agregados para el perfil
-                $_SESSION['user_nombre'] = $user['nombre_completo'];
+                $_SESSION['user_nombre'] = $user['nombres'];
+                $_SESSION['user_apellido_paterno'] = $user['apellido_paterno'];
+                $_SESSION['user_apellido_materno'] = $user['apellido_materno'];
                 $_SESSION['user_fecha_nacimiento'] = $user['fecha_nacimiento'];
                 $_SESSION['user_genero'] = $user['genero'];
                 $_SESSION['user_pais_nacimiento'] = $user['pais_nacimiento'];

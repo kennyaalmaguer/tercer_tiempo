@@ -2,9 +2,9 @@
 session_start();
 
 // DEBUG: Mostrar datos de sesión
-echo "<!-- DEBUG SESIÓN: ";
-print_r($_SESSION);
-echo " -->";
+//echo "<!-- DEBUG SESIÓN: ";
+//print_r($_SESSION);
+//echo " -->";
 
 // Redirigir si no está logueado
 if (!isset($_SESSION['user_id'])) {
@@ -37,13 +37,13 @@ $user_foto = $_SESSION['user_foto'] ?? 'img/profile2.jpg';
 $user_descripcion = $_SESSION['user_descripcion'] ?? 'Apasionado por el fútbol';
 
 // DEBUG: Mostrar datos procesados
-echo "<!-- DEBUG DATOS PROCESADOS: ";
-echo "user_id: $user_id, ";
-echo "user_nombre: $user_nombre, ";
-echo "user_apellido_paterno: $user_apellido_paterno, ";
-echo "user_apellido_materno: $user_apellido_materno, ";
-echo "user_email: $user_email";
-echo " -->";
+//echo "<!-- DEBUG DATOS PROCESADOS: ";
+//echo "user_id: $user_id, ";
+//echo "user_nombre: $user_nombre, ";
+//echo "user_apellido_paterno: $user_apellido_paterno, ";
+//echo "user_apellido_materno: $user_apellido_materno, ";
+//echo "user_email: $user_email";
+//echo " -->";
 
 // Nombre completo
 $nombre_completo = $user_nombre;
@@ -186,7 +186,7 @@ if (!empty($user_apellido_materno)) {
             <div class="form-group">
                 <label for="profile-picture">foto de perfil</label>
                 <input type="file" id="profile-picture" name="profile_picture" accept="image/*">
-                <small>Formatos: JPG, PNG, GIF (Máx. 5MB)</small>
+                <small>Formatos: jpg, png, gif (máx. 5mb)</small>
             </div>
             
             <div class="form-group">
@@ -229,6 +229,13 @@ if (!empty($user_apellido_materno)) {
 </section>
 
 <script>
+
+    const inputFecha = document.getElementById('birthdate');
+    const hoy = new Date();
+    const hace12 = new Date(hoy.getFullYear() - 12, hoy.getMonth(), hoy.getDate());
+
+    // Limita la fecha máxima permitida
+    inputFecha.max = hace12.toISOString().split('T')[0];
 // DEBUG: Verificar que los elementos existen
 console.log('DEBUG: Iniciando JavaScript...');
 console.log('Edit button:', document.getElementById('edit-profile-btn'));
@@ -307,7 +314,8 @@ document.getElementById('profile-form').addEventListener('submit', function(e) {
             // Actualizar foto si se cambió
             if (data.new_photo) {
                 const img = document.querySelector('.perfil-foto img');
-                img.src = data.new_photo + '?t=' + new Date().getTime();
+                // Línea corregida (sin el ?t=...):
+                img.src = data.new_photo;
                 console.log('DEBUG: Foto actualizada a:', data.new_photo);
             }
             
@@ -349,11 +357,16 @@ function updateProfileData() {
 }
 
 // Función para formatear fecha de YYYY-MM-DD a DD/MM/YYYY
-function formatDate(dateString) {
+/*function formatDate(dateString) {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}*/
+
+function formatDate(dateString) {
+    const [year, month, day] = dateString.split("-");
     return `${day}/${month}/${year}`;
 }
 

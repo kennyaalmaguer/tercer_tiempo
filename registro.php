@@ -79,21 +79,29 @@
                             <h3 class="section-title">Información Personal</h3>
                             
                             <div class="input-container">
-                                <input type="text" name="nombre" id="nombre" placeholder=" " required>
+                                <input type="text" name="nombre" id="nombre" placeholder=" " required
+                                    pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}( [A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,})*$"
+                                    title="Solo letras, mínimo 2 por palabra y un solo espacio entre nombres.">
                                 <label for="nombre">Nombre(s)</label>
                             </div>
+
                             
-                            <div class="input-group">
+                           <div class="input-group">
                                 <div class="input-container">
-                                    <input type="text" name="apellido_paterno" id="apellido_paterno" placeholder=" " required>
+                                    <input type="text" name="apellido_paterno" id="apellido_paterno" placeholder=" " required
+                                        pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}( [A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,})*$"
+                                        title="Solo letras, mínimo 2 por palabra y un solo espacio.">
                                     <label for="apellido_paterno">Apellido Paterno</label>
                                 </div>
-                                
+
                                 <div class="input-container">
-                                    <input type="text" name="apellido_materno" id="apellido_materno" placeholder=" ">
+                                    <input type="text" name="apellido_materno" id="apellido_materno" placeholder=" "
+                                        pattern="^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,}( [A-Za-zÁÉÍÓÚÜÑáéíóúüñ]{2,})*$"
+                                        title="Solo letras, mínimo 2 por palabra y un solo espacio.">
                                     <label for="apellido_materno">Apellido Materno</label>
                                 </div>
                             </div>
+
 
                             <div class="input-group">
                                 <div class="input-container">
@@ -185,20 +193,25 @@
                             <h3 class="section-title">Información de Cuenta</h3>
                             
                             <div class="input-container">
-                                <input type="email" name="correo" id="correo" placeholder=" " required>
+                                <input type="email" name="correo" id="correo" placeholder=" " required
+                                    pattern="^[a-zA-Z0-9]+@(hotmail\.com|gmail\.com)$"
+                                    title="El correo no debe contener puntos antes del @ y debe ser hotmail.com o gmail.com">
                                 <label for="correo">Correo Electrónico</label>
                             </div>
+
                             
                             <div class="input-container password-container">
-                                <input type="password" name="contrasena" id="contrasena" placeholder=" " required 
-                                       pattern="^(?=.*[a-záéíóúüñ])(?=.*[A-ZÁÉÍÓÚÜÑ])(?=.*\d)(?=.*[!@#$%^&*()_+=\-\[\]{};':|,.<>?/]).{8,}$"
-                                       title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial">
+                                <input type="password" name="contrasena" id="contrasena" placeholder=" " required
+                                  pattern=".{8,}"
+                                    title="La contraseña debe tener al menos 8 caracteres, con mayúscula, minúscula, número y un carácter especial">
+
                                 <label for="contrasena">Contraseña</label>
                                 <div class="password-requirements">
                                     <small>Requisitos: Mínimo 8 caracteres, incluir mayúscula, minúscula, número y carácter especial</small>
                                 </div>
                             </div>
-                            
+
+                                                        
                             <div class="input-container">
                                 <input type="password" name="confirmar_contrasena" id="confirmar_contrasena" placeholder=" " required>
                                 <label for="confirmar_contrasena">Confirmar Contraseña</label>
@@ -221,7 +234,7 @@
     </div>
 </div><br><br>
 
-<script>
+<!--<script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formRegistro');
     const messageContainer = document.getElementById('messageContainer');
@@ -319,6 +332,148 @@ document.addEventListener('DOMContentLoaded', function() {
         messageContainer.scrollIntoView({ behavior: 'smooth' });
     }
 });
+</script>-->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formRegistro');
+    const messageContainer = document.getElementById('messageContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const originalBtnText = submitBtn.innerHTML;
+
+    // ===============================
+    // PREVIEW DE FOTO
+    // ===============================
+    const fotoInput = document.getElementById('foto');
+    const previewImg = document.getElementById('previewImg');
+    const fotoPlaceholder = document.querySelector('.foto-placeholder');
+
+    fotoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+                fotoPlaceholder.style.display = 'none';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // ===============================
+    // VALIDACIÓN DE CONTRASEÑA (ACEPTA EMOJIS Y ☺)
+    // ===============================
+    function validarPassword() {
+        const pass = document.getElementById("contrasena").value;
+        const requisitos = document.querySelector(".password-requirements small");
+
+        const regexMinus = /[a-záéíóúüñ]/;
+        const regexMayus = /[A-ZÁÉÍÓÚÜÑ]/;
+        const regexNumero = /\d/;
+        const regexEspecial = /[^\w\s]/u;  // Acepta emojis, símbolos y ☺
+
+        const valido =
+            regexMinus.test(pass) &&
+            regexMayus.test(pass) &&
+            regexNumero.test(pass) &&
+            regexEspecial.test(pass) &&
+            pass.length >= 8;
+
+        requisitos.style.color = valido ? "green" : "red";
+        return valido;
+    }
+
+    document.getElementById("contrasena").addEventListener("input", validarPassword);
+
+    // ===============================
+    // CONFIRMAR CONTRASEÑA
+    // ===============================
+    document.getElementById('confirmar_contrasena').addEventListener('input', function() {
+        const password = document.getElementById('contrasena').value;
+        const confirmPassword = this.value;
+        const matchElement = document.getElementById('passwordMatch');
+        
+        if (confirmPassword === '') {
+            matchElement.innerHTML = '';
+            matchElement.className = 'password-match';
+        } else if (password === confirmPassword) {
+            matchElement.innerHTML = '✓ Las contraseñas coinciden';
+            matchElement.className = 'password-match valid';
+        } else {
+            matchElement.innerHTML = '✗ Las contraseñas no coinciden';
+            matchElement.className = 'password-match invalid';
+        }
+    });
+
+    // ===============================
+    // ENVÍO DEL FORMULARIO
+    // ===============================
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // VALIDAR CONTRASEÑA ANTES DE ENVIAR
+        if (!validarPassword()) {
+            showMessage("La contraseña no cumple los requisitos.", "error");
+            return;
+        }
+
+        // VALIDAR QUE LAS CONTRASEÑAS COINCIDEN
+        const pass = document.getElementById('contrasena').value;
+        const confirm = document.getElementById('confirmar_contrasena').value;
+
+        if (pass !== confirm) {
+            showMessage("Las contraseñas no coinciden.", "error");
+            return;
+        }
+
+        // Mostrar loading
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
+        submitBtn.disabled = true;
+        form.classList.add('loading');
+        
+        const formData = new FormData(form);
+        
+        fetch('procesar_registro.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Error de red');
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                showMessage(data.message, 'success');
+                setTimeout(() => { window.location.href = data.redirect; }, 2000);
+            } else {
+                let errorMessage = 'Errores encontrados:<br>' + data.errors.join('<br>');
+                showMessage(errorMessage, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showMessage('Error al procesar el registro. Intenta nuevamente.', 'error');
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+            form.classList.remove('loading');
+        });
+    });
+
+    // ===============================
+    // FUNCIÓN PARA MOSTRAR MENSAJES
+    // ===============================
+    function showMessage(message, type) {
+        messageContainer.innerHTML = `
+            <div class="${type === 'error' ? 'error-message' : 'success-message'}">
+                ${message}
+            </div>
+        `;
+        messageContainer.scrollIntoView({ behavior: 'smooth' });
+    }
+});
 </script>
+
 </body>
 </html>
