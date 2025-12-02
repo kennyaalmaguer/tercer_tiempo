@@ -4,6 +4,35 @@ session_start();
 // Incluir la configuración de la base de datos
 require_once 'config/database.php';
 
+// Lista de mundiales históricos hasta 2026
+function obtenerMundialesHistoricos() {
+    return [
+        ['id' => 1, 'año' => 1930, 'sede' => 'Uruguay', 'nombre' => 'Uruguay 1930'],
+        ['id' => 2, 'año' => 1934, 'sede' => 'Italia', 'nombre' => 'Italia 1934'],
+        ['id' => 3, 'año' => 1938, 'sede' => 'Francia', 'nombre' => 'Francia 1938'],
+        ['id' => 4, 'año' => 1950, 'sede' => 'Brasil', 'nombre' => 'Brasil 1950'],
+        ['id' => 5, 'año' => 1954, 'sede' => 'Suiza', 'nombre' => 'Suiza 1954'],
+        ['id' => 6, 'año' => 1958, 'sede' => 'Suecia', 'nombre' => 'Suecia 1958'],
+        ['id' => 7, 'año' => 1962, 'sede' => 'Chile', 'nombre' => 'Chile 1962'],
+        ['id' => 8, 'año' => 1966, 'sede' => 'Inglaterra', 'nombre' => 'Inglaterra 1966'],
+        ['id' => 9, 'año' => 1970, 'sede' => 'México', 'nombre' => 'México 1970'],
+        ['id' => 10, 'año' => 1974, 'sede' => 'Alemania Occidental', 'nombre' => 'Alemania 1974'],
+        ['id' => 11, 'año' => 1978, 'sede' => 'Argentina', 'nombre' => 'Argentina 1978'],
+        ['id' => 12, 'año' => 1982, 'sede' => 'España', 'nombre' => 'España 1982'],
+        ['id' => 13, 'año' => 1986, 'sede' => 'México', 'nombre' => 'México 1986'],
+        ['id' => 14, 'año' => 1990, 'sede' => 'Italia', 'nombre' => 'Italia 1990'],
+        ['id' => 15, 'año' => 1994, 'sede' => 'Estados Unidos', 'nombre' => 'USA 1994'],
+        ['id' => 16, 'año' => 1998, 'sede' => 'Francia', 'nombre' => 'Francia 1998'],
+        ['id' => 17, 'año' => 2002, 'sede' => 'Corea/Japón', 'nombre' => 'Corea/Japón 2002'],
+        ['id' => 18, 'año' => 2006, 'sede' => 'Alemania', 'nombre' => 'Alemania 2006'],
+        ['id' => 19, 'año' => 2010, 'sede' => 'Sudáfrica', 'nombre' => 'Sudáfrica 2010'],
+        ['id' => 20, 'año' => 2014, 'sede' => 'Brasil', 'nombre' => 'Brasil 2014'],
+        ['id' => 21, 'año' => 2018, 'sede' => 'Rusia', 'nombre' => 'Rusia 2018'],
+        ['id' => 22, 'año' => 2022, 'sede' => 'Qatar', 'nombre' => 'Qatar 2022'],
+        ['id' => 23, 'año' => 2026, 'sede' => 'Canadá/EEUU/México', 'nombre' => 'América del Norte 2026']
+    ];
+}
+
 // Procesar formularios
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
@@ -31,10 +60,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function agregarMundial() {
     global $pdo;
     
-    $nombre = trim($_POST['nombre_mundial']);
-    $año = intval($_POST['año_mundial']);
-    $pais_sede = trim($_POST['pais_sede']);
+    // Obtener el mundial seleccionado del combo box
+    $mundialSeleccionado = $_POST['mundial_seleccionado'];
+    $mundialesHistoricos = obtenerMundialesHistoricos();
+    
+    // Buscar el mundial seleccionado en la lista
+    $mundialData = null;
+    foreach ($mundialesHistoricos as $mundial) {
+        if ($mundial['id'] == $mundialSeleccionado) {
+            $mundialData = $mundial;
+            break;
+        }
+    }
+    
+    if (!$mundialData) {
+        $_SESSION['mensaje'] = "Error: Mundial seleccionado no válido";
+        $_SESSION['tipo_mensaje'] = "error";
+        header('Location: admin.php');
+        exit();
+    }
+    
+    $nombre = $mundialData['nombre'];
+    $año = $mundialData['año'];
+    $pais_sede = $mundialData['sede'];
     $descripcion = trim($_POST['descripcion_mundial']);
+    
+    // Verificar si el mundial ya existe en la base de datos
+    try {
+        $sql_check = "SELECT COUNT(*) as total FROM mundiales WHERE año = ? AND activo = 1";
+        $stmt_check = $pdo->prepare($sql_check);
+        $stmt_check->execute([$año]);
+        $result = $stmt_check->fetch();
+        
+        if ($result['total'] > 0) {
+            $_SESSION['mensaje'] = "Error: El mundial del año $año ya existe en el sistema";
+            $_SESSION['tipo_mensaje'] = "error";
+            header('Location: admin.php');
+            exit();
+        }
+    } catch (PDOException $e) {
+        $_SESSION['mensaje'] = "Error al verificar mundial: " . $e->getMessage();
+        $_SESSION['tipo_mensaje'] = "error";
+        header('Location: admin.php');
+        exit();
+    }
     
     // Procesar imágenes
     $logo = null;
@@ -50,7 +119,7 @@ function agregarMundial() {
     
     try {
         $sql = "INSERT INTO mundiales (nombre, año, pais_sede, descripcion, logo, imagen_representativa, activo) 
-                VALUES (?, ?, ?, ?, ?, ?, 1)";
+                 VALUES (?, ?, ?, ?, ?, ?, 1)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$nombre, $año, $pais_sede, $descripcion, $logo, $imagen_representativa]);
         
@@ -100,20 +169,21 @@ function eliminarMundial() {
         $result = $stmt_check->fetch();
         
         if ($result['total'] > 0) {
-            $_SESSION['mensaje'] = "No se puede eliminar el mundial porque tiene publicaciones asociadas";
+            $_SESSION['mensaje'] = "No se puede desactivar el mundial porque tiene publicaciones asociadas";
             $_SESSION['tipo_mensaje'] = "error";
             header('Location: admin.php');
             exit();
         }
         
-        $sql = "DELETE FROM mundiales WHERE id_mundial = ?";
+        // CORRECCIÓN: Borrado Lógico (Soft Delete)
+        $sql = "UPDATE mundiales SET activo = 0 WHERE id_mundial = ?";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$id_mundial]);
         
-        $_SESSION['mensaje'] = "Mundial eliminado correctamente";
+        $_SESSION['mensaje'] = "Mundial desactivado correctamente";
         $_SESSION['tipo_mensaje'] = "success";
     } catch (PDOException $e) {
-        $_SESSION['mensaje'] = "Error al eliminar mundial: " . $e->getMessage();
+        $_SESSION['mensaje'] = "Error al desactivar mundial: " . $e->getMessage();
         $_SESSION['tipo_mensaje'] = "error";
     }
     
@@ -134,20 +204,21 @@ function eliminarCategoria() {
         $result = $stmt_check->fetch();
         
         if ($result['total'] > 0) {
-            $_SESSION['mensaje'] = "No se puede eliminar la categoría porque tiene publicaciones asociadas";
+            $_SESSION['mensaje'] = "No se puede desactivar la categoría porque tiene publicaciones asociadas";
             $_SESSION['tipo_mensaje'] = "error";
             header('Location: admin.php');
             exit();
         }
         
-        $sql = "DELETE FROM categorias WHERE id_categoria = ?";
+        // CORRECCIÓN: Borrado Lógico (Soft Delete)
+        $sql = "UPDATE categorias SET activo = 0 WHERE id_categoria = ?";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$id_categoria]);
         
-        $_SESSION['mensaje'] = "Categoría eliminada correctamente";
+        $_SESSION['mensaje'] = "Categoría desactivada correctamente";
         $_SESSION['tipo_mensaje'] = "success";
     } catch (PDOException $e) {
-        $_SESSION['mensaje'] = "Error al eliminar categoría: " . $e->getMessage();
+        $_SESSION['mensaje'] = "Error al desactivar categoría: " . $e->getMessage();
         $_SESSION['tipo_mensaje'] = "error";
     }
     
@@ -184,7 +255,7 @@ function obtenerMundiales() {
     
     try {
         $sql = "SELECT m.*, 
-                       (SELECT COUNT(*) FROM publicaciones p WHERE p.id_mundial = m.id_mundial) as total_publicaciones
+                        (SELECT COUNT(*) FROM publicaciones p WHERE p.id_mundial = m.id_mundial) as total_publicaciones
                 FROM mundiales m 
                 WHERE m.activo = 1 
                 ORDER BY m.año DESC";
@@ -199,7 +270,7 @@ function obtenerCategorias() {
     
     try {
         $sql = "SELECT c.*, 
-                       (SELECT COUNT(*) FROM publicaciones p WHERE p.id_categoria = c.id_categoria) as total_publicaciones
+                        (SELECT COUNT(*) FROM publicaciones p WHERE p.id_categoria = c.id_categoria) as total_publicaciones
                 FROM categorias c 
                 WHERE c.activo = 1 
                 ORDER BY c.nombre";
@@ -214,8 +285,8 @@ function obtenerUsuarios() {
     
     try {
         $sql = "SELECT u.*, 
-                       (SELECT COUNT(*) FROM publicaciones p WHERE p.id_usuario = u.id_usuario) as total_publicaciones,
-                       (SELECT COUNT(*) FROM comentarios c WHERE c.id_usuario = u.id_usuario) as total_comentarios
+                        (SELECT COUNT(*) FROM publicaciones p WHERE p.id_usuario = u.id_usuario) as total_publicaciones,
+                        (SELECT COUNT(*) FROM comentarios c WHERE c.id_usuario = u.id_usuario) as total_comentarios
                 FROM usuarios u 
                 ORDER BY u.fecha_registro DESC";
         return $pdo->query($sql)->fetchAll();
@@ -267,6 +338,21 @@ $mundiales = obtenerMundiales();
 $categorias = obtenerCategorias();
 $usuarios = obtenerUsuarios();
 $estadisticas = obtenerEstadisticas();
+
+// 🌟 CORRECCIÓN PARA EL NOMBRE COMPLETO EN EL ENCABEZADO
+$nombre_admin = $_SESSION['user_nombre'] ?? '';
+$apellido_paterno_admin = $_SESSION['user_apellido_paterno'] ?? '';
+$apellido_materno_admin = $_SESSION['user_apellido_materno'] ?? '';
+
+// Concatenar las partes para obtener el nombre completo
+$nombre_completo_admin = trim(
+    $nombre_admin . 
+    ($apellido_paterno_admin ? ' ' . $apellido_paterno_admin : '') . 
+    ($apellido_materno_admin ? ' ' . $apellido_materno_admin : '')
+);
+
+$nombre_a_mostrar = $nombre_completo_admin ?: 'Administrador';
+// 🌟 FIN DE CORRECCIÓN PARA EL NOMBRE COMPLETO EN EL ENCABEZADO
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -314,10 +400,48 @@ $estadisticas = obtenerEstadisticas();
             margin-top: 10px;
             display: none;
         }
+
+        /* Nuevos estilos para el combo box de mundiales */
+        .info-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .info-row {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .form-text {
+            color: #6c757d;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        select.form-control {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            background-color: white;
+        }
+
+        select.form-control:focus {
+            border-color: #003366;
+            outline: none;
+        }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
     <div class="admin-sidebar">
         <div class="admin-logo">Tercer Tiempo</div>
         <nav class="admin-nav">
@@ -341,24 +465,22 @@ $estadisticas = obtenerEstadisticas();
                 <i class="fas fa-users"></i>
                 <span>usuarios</span>
             </a>
-            <a href="index.php" class="admin-nav-item">
-                <i class="fas fa-home"></i>
-                <span>volver al sitio</span>
+            <a href="logout_admin.php" class="admin-nav-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>salir</span>
             </a>
         </nav>
     </div>
 
-    <!-- Contenido principal -->
     <div class="admin-main">
         <header class="admin-header">
             <h1 class="admin-title" id="section-title">panel de administración</h1>
             <div class="admin-user">
                 <div class="user-avatar">A</div>
-                <span><?php echo htmlspecialchars($_SESSION['user_nombre'] ?? 'Administrador'); ?></span>
+                <span><?php echo htmlspecialchars($nombre_a_mostrar); ?></span>
             </div>
         </header>
 
-        <!-- Mostrar mensajes -->
         <?php if (isset($_SESSION['mensaje'])): ?>
             <div class="alert alert-<?php echo $_SESSION['tipo_mensaje'] === 'success' ? 'success' : 'error'; ?>">
                 <?php echo htmlspecialchars($_SESSION['mensaje']); ?>
@@ -366,7 +488,6 @@ $estadisticas = obtenerEstadisticas();
             <?php unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']); ?>
         <?php endif; ?>
 
-        <!-- Dashboard -->
         <div id="dashboard" class="admin-section active">
             <div class="stats-grid">
                 <div class="stat-card">
@@ -392,7 +513,6 @@ $estadisticas = obtenerEstadisticas();
             </div>
         </div>
 
-        <!-- Gestión de Mundiales -->
         <div id="mundiales" class="admin-section">
             <div class="section-header">
                 <h2 class="section-title">gestión de mundiales</h2>
@@ -430,8 +550,8 @@ $estadisticas = obtenerEstadisticas();
                                     <input type="hidden" name="action" value="eliminar_mundial">
                                     <input type="hidden" name="id_mundial" value="<?php echo $mundial['id_mundial']; ?>">
                                     <button type="submit" class="action-btn btn-danger" 
-                                            onclick="return confirm('¿Estás seguro de eliminar el mundial <?php echo htmlspecialchars($mundial['nombre']); ?>?')">
-                                        eliminar
+                                            onclick="return confirm('¿Estás seguro de desactivar el mundial <?php echo htmlspecialchars($mundial['nombre']); ?>? Ya no aparecerá en el sitio.')">
+                                        desactivar
                                     </button>
                                 </form>
                             </td>
@@ -442,7 +562,6 @@ $estadisticas = obtenerEstadisticas();
             <?php endif; ?>
         </div>
 
-        <!-- Gestión de Categorías -->
         <div id="categorias" class="admin-section">
             <div class="section-header">
                 <h2 class="section-title">gestión de categorías</h2>
@@ -478,8 +597,8 @@ $estadisticas = obtenerEstadisticas();
                                     <input type="hidden" name="action" value="eliminar_categoria">
                                     <input type="hidden" name="id_categoria" value="<?php echo $categoria['id_categoria']; ?>">
                                     <button type="submit" class="action-btn btn-danger" 
-                                            onclick="return confirm('¿Estás seguro de eliminar la categoría <?php echo htmlspecialchars($categoria['nombre']); ?>?')">
-                                        eliminar
+                                            onclick="return confirm('¿Estás seguro de desactivar la categoría <?php echo htmlspecialchars($categoria['nombre']); ?>? Ya no aparecerá en el sitio.')">
+                                        desactivar
                                     </button>
                                 </form>
                             </td>
@@ -490,7 +609,6 @@ $estadisticas = obtenerEstadisticas();
             <?php endif; ?>
         </div>
 
-        <!-- Publicaciones -->
         <div id="publicaciones" class="admin-section">
             <div class="section-header">
                 <h2 class="section-title">publicaciones pendientes</h2>
@@ -502,7 +620,6 @@ $estadisticas = obtenerEstadisticas();
             </div>
         </div>
 
-        <!-- Usuarios -->
         <div id="usuarios" class="admin-section">
             <div class="section-header">
                 <h2 class="section-title">gestión de usuarios</h2>
@@ -530,7 +647,7 @@ $estadisticas = obtenerEstadisticas();
                     <tbody>
                         <?php foreach ($usuarios as $usuario): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($usuario['nombre_completo']); ?></td>
+                            <td><?php echo htmlspecialchars($usuario['nombres']); ?></td>
                             <td><?php echo htmlspecialchars($usuario['email']); ?></td>
                             <td><?php echo htmlspecialchars($usuario['total_publicaciones']); ?></td>
                             <td><?php echo htmlspecialchars($usuario['total_comentarios']); ?></td>
@@ -560,7 +677,7 @@ $estadisticas = obtenerEstadisticas();
         </div>
     </div>
 
-    <!-- Modal para agregar mundial -->
+    <!-- Modal para agregar mundial ACTUALIZADO con combo box -->
     <div id="modal-mundial" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -570,33 +687,66 @@ $estadisticas = obtenerEstadisticas();
             <form method="POST" id="form-mundial" enctype="multipart/form-data">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="agregar_mundial">
+                    
                     <div class="form-group">
-                        <label class="form-label">nombre del mundial</label>
-                        <input type="text" class="form-control" name="nombre_mundial" placeholder="Ej: Qatar 2022" required>
+                        <label class="form-label">seleccionar mundial</label>
+                        <select class="form-control" name="mundial_seleccionado" id="select-mundial" required>
+                            <option value="">-- Selecciona un mundial --</option>
+                            <?php 
+                            $mundialesHistoricos = obtenerMundialesHistoricos();
+                            $mundialesExistentes = obtenerMundiales(); // Mundiales ya en la BD
+                            
+                            // Crear array de años existentes para filtrar
+                            $añosExistentes = [];
+                            foreach ($mundialesExistentes as $mundialExistente) {
+                                $añosExistentes[] = $mundialExistente['año'];
+                            }
+                            
+                            foreach ($mundialesHistoricos as $mundial): 
+                                // Mostrar solo mundiales que no estén ya en la base de datos
+                                if (!in_array($mundial['año'], $añosExistentes)):
+                            ?>
+                                <option value="<?php echo $mundial['id']; ?>">
+                                    <?php echo $mundial['año'] . ' - ' . $mundial['sede'] . ' (' . $mundial['nombre'] . ')'; ?>
+                                </option>
+                            <?php 
+                                endif;
+                            endforeach; 
+                            ?>
+                        </select>
+                        <small class="form-text">Solo se muestran mundiales que no han sido agregados previamente</small>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">año</label>
-                            <input type="number" class="form-control" name="año_mundial" min="1930" max="2030" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">país sede</label>
-                            <input type="text" class="form-control" name="pais_sede" placeholder="Ej: Qatar" required>
+                    
+                    <div class="form-group">
+                        <label class="form-label">información del mundial seleccionado</label>
+                        <div id="info-mundial" class="info-box" style="display: none;">
+                            <div class="info-row">
+                                <strong>Nombre:</strong> <span id="info-nombre"></span>
+                            </div>
+                            <div class="info-row">
+                                <strong>Año:</strong> <span id="info-año"></span>
+                            </div>
+                            <div class="info-row">
+                                <strong>Sede:</strong> <span id="info-sede"></span>
+                            </div>
                         </div>
                     </div>
+                    
                     <div class="form-group">
                         <label class="form-label">logo del mundial</label>
                         <input type="file" class="file-input" name="logo_mundial" accept="image/*">
                         <img id="preview-logo" class="image-preview" alt="Vista previa del logo">
                     </div>
+                    
                     <div class="form-group">
                         <label class="form-label">imagen representativa</label>
                         <input type="file" class="file-input" name="imagen_representativa" accept="image/*">
                         <img id="preview-imagen" class="image-preview" alt="Vista previa de imagen representativa">
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label">descripción</label>
-                        <textarea class="form-control" name="descripcion_mundial" rows="3" placeholder="Breve descripción del mundial..." required></textarea>
+                        <label class="form-label">descripción adicional</label>
+                        <textarea class="form-control" name="descripcion_mundial" rows="3" placeholder="Agrega una descripción personalizada para este mundial..." required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -607,7 +757,6 @@ $estadisticas = obtenerEstadisticas();
         </div>
     </div>
 
-    <!-- Modal para agregar categoría -->
     <div id="modal-categoria" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -638,6 +787,11 @@ $estadisticas = obtenerEstadisticas();
         // Navegación entre secciones
         document.querySelectorAll('.admin-nav-item').forEach(item => {
             item.addEventListener('click', function(e) {
+
+if (this.getAttribute('href') === 'logout_admin.php') {
+            return; // Permitir que el navegador siga el enlace normalmente
+        }
+
                 e.preventDefault();
                 
                 // Remover clase active de todos los items
@@ -675,6 +829,10 @@ $estadisticas = obtenerEstadisticas();
         closeModalBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 modalMundial.style.display = 'none';
+                // Limpiar el formulario al cerrar
+                document.getElementById('select-mundial').value = '';
+                document.getElementById('info-mundial').style.display = 'none';
+                document.getElementById('form-mundial').reset();
             });
         });
 
@@ -697,9 +855,43 @@ $estadisticas = obtenerEstadisticas();
         window.addEventListener('click', (e) => {
             if (e.target === modalMundial) {
                 modalMundial.style.display = 'none';
+                // Limpiar el formulario al cerrar
+                document.getElementById('select-mundial').value = '';
+                document.getElementById('info-mundial').style.display = 'none';
+                document.getElementById('form-mundial').reset();
             }
             if (e.target === modalCategoria) {
                 modalCategoria.style.display = 'none';
+            }
+        });
+
+        // Manejar la selección del mundial en el combo box
+        document.getElementById('select-mundial').addEventListener('change', function(e) {
+            const mundialId = this.value;
+            const infoBox = document.getElementById('info-mundial');
+            
+            if (mundialId) {
+                // Los datos de los mundiales están hardcodeados en PHP, los pasamos a JS
+                const mundialesHistoricos = [
+                    <?php foreach (obtenerMundialesHistoricos() as $mundial): ?>
+                    {
+                        id: <?php echo $mundial['id']; ?>,
+                        nombre: "<?php echo $mundial['nombre']; ?>",
+                        año: <?php echo $mundial['año']; ?>,
+                        sede: "<?php echo $mundial['sede']; ?>"
+                    },
+                    <?php endforeach; ?>
+                ];
+                
+                const mundialSeleccionado = mundialesHistoricos.find(m => m.id == mundialId);
+                if (mundialSeleccionado) {
+                    document.getElementById('info-nombre').textContent = mundialSeleccionado.nombre;
+                    document.getElementById('info-año').textContent = mundialSeleccionado.año;
+                    document.getElementById('info-sede').textContent = mundialSeleccionado.sede;
+                    infoBox.style.display = 'block';
+                }
+            } else {
+                infoBox.style.display = 'none';
             }
         });
 

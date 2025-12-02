@@ -1,5 +1,78 @@
 <?php
 session_start();
+
+// Conexión a la base de datos
+$servername = "127.0.0.1";
+$username = "root"; // Cambiar si es necesario
+$password = ""; // Cambiar si es necesario
+$dbname = "tercer_tiempo";
+
+// Crear conexión
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Consulta para obtener los mundiales con estadísticas
+$sql = "
+    SELECT 
+        m.id_mundial,
+        m.nombre,
+        m.año,
+        m.pais_sede,
+        m.descripcion,
+        m.imagen_representativa,
+        m.logo,
+        COUNT(DISTINCT p.id_publicacion) as publicaciones_count,
+        COUNT(DISTINCT l.id_like) as likes_count,
+        COUNT(DISTINCT v.id_vista) as vistas_count,
+        COUNT(DISTINCT c.id_comentario) as comentarios_count
+    FROM mundiales m
+    LEFT JOIN publicaciones p ON m.id_mundial = p.id_mundial AND p.estado = 'aprobado'
+    LEFT JOIN likes l ON p.id_publicacion = l.id_publicacion
+    LEFT JOIN vistas v ON p.id_publicacion = v.id_publicacion
+    LEFT JOIN comentarios c ON p.id_publicacion = c.id_publicacion
+    WHERE m.activo = 1
+    GROUP BY m.id_mundial
+    ORDER BY m.año DESC
+";
+
+$result = $conn->query($sql);
+$mundiales = [];
+
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        // Convertir BLOB a base64 para las imágenes
+        $imagen_base64 = null;
+        $logo_base64 = null;
+        
+        if ($row['imagen_representativa']) {
+            $imagen_base64 = 'data:image/jpeg;base64,' . base64_encode($row['imagen_representativa']);
+        }
+        
+        if ($row['logo']) {
+            $logo_base64 = 'data:image/jpeg;base64,' . base64_encode($row['logo']);
+        }
+        
+        $mundiales[] = [
+            'id' => $row['id_mundial'],
+            'nombre' => strtolower($row['nombre']),
+            'año' => $row['año'],
+            'pais' => strtolower($row['pais_sede']),
+            'imagen' => $imagen_base64 ?: 'img/default-mundial.jpg',
+            'logo' => $logo_base64 ?: 'img/default-logo.jpg',
+            'descripcion' => $row['descripcion'],
+            'likes' => $row['likes_count'],
+            'comentarios' => $row['comentarios_count'],
+            'vistas' => $row['vistas_count'],
+            'publicaciones' => $row['publicaciones_count']
+        ];
+    }
+}
+
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -124,14 +197,14 @@ session_start();
         align-items: center;
         justify-content: center;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        overflow: hidden; /* IMPORTANTE para recortar bien el logo */
+        overflow: hidden;
     }
 
     .mundial-logo img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Hace que el logo llene el círculo */
-        border-radius: 50%; /* Asegura que quede circular */
+        object-fit: cover;
+        border-radius: 50%;
     }
 
     .mundial-info {
@@ -271,13 +344,13 @@ session_start();
             flex: 0 0 280px;
         }
 
-         .mundial-nombre {
-        font-family: 'The Youth', sans-serif;
-        font-size: 5px;
-        margin-bottom: 5px;
-        color: #FFD700;
-        text-transform: lowercase;
-    }
+        .mundial-nombre {
+            font-family: 'The Youth', sans-serif;
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #FFD700;
+            text-transform: lowercase;
+        }
     }
 
     </style>
@@ -289,8 +362,6 @@ session_start();
             <div class="nav-item">
                 <p>Tt</p>
             </div>
-
-            
 
             <nav>
                 <?php if (isset($_SESSION['user_id'])): ?>
@@ -313,8 +384,6 @@ session_start();
     </div>
 
     <div class="azul-section">
-      
-        
         <div class="mundial-content">
             <h2 class="mundial-title">mundial de fútbol 2026</h2>
             
@@ -354,8 +423,7 @@ session_start();
         
         <div class="mundiales-container">
             <div class="mundiales-slider" id="mundiales-slider">
-                <!-- Tarjetas de mundiales generadas dinámicamente -->
-                <!-- Estas se llenarán desde la base de datos -->
+                <!-- Tarjetas de mundiales generadas dinámicamente desde PHP/JS -->
             </div>
         </div>
         
@@ -397,15 +465,18 @@ session_start();
     </div>
 
     <script>
-        // Datos de ejemplo para los mundiales (esto vendría de la base de datos)
-        const mundiales = [
+        // Convertir los datos de PHP a JavaScript
+        const mundiales = <?php echo json_encode($mundiales); ?>;
+
+        // Si no hay mundiales en la base de datos, usar datos de ejemplo
+        const mundialesData = mundiales.length > 0 ? mundiales : [
             {
                 id: 1,
                 nombre: "qatar 2022",
                 año: 2022,
                 pais: "qatar",
-                imagen: "img/qtar2022.jpg",
-                logo: "img/logo_qatar.jpg",
+                imagen: "img/default-mundial.jpg",
+                logo: "img/default-logo.jpg",
                 descripcion: "El primer mundial celebrado en el mundo árabe, con Argentina como campeona tras una emocionante final contra Francia.",
                 likes: 245,
                 comentarios: 78,
@@ -417,34 +488,20 @@ session_start();
                 nombre: "rusia 2018",
                 año: 2018,
                 pais: "rusia",
-                imagen: "img/rusia2018.jpg",
-                logo: "img/logo_rusia.jpg",
+                imagen: "img/default-mundial.jpg",
+                logo: "img/default-logo.jpg",
                 descripcion: "Francia se coronó campeón por segunda vez en su historia tras vencer a Croacia en la final.",
                 likes: 189,
                 comentarios: 56,
                 vistas: 980,
                 publicaciones: 35
-            },
-            {
-                id: 3,
-                nombre: "brasil 2014",
-                año: 2014,
-                pais: "brasil",
-                imagen: "img/brasil2014.jpg",
-                logo: "img/logo_brasil.jpg",
-                descripcion: "Alemania ganó su cuarto título mundial tras derrotar a Argentina en la final con gol de Mario Götze.",
-                likes: 167,
-                comentarios: 42,
-                vistas: 850,
-                publicaciones: 28
-            },
-            
+            }
         ];
 
         // Variables para el slider
         let currentSlide = 0;
         const mundialesPorSlide = 3;
-        const totalSlides = Math.ceil(mundiales.length / mundialesPorSlide);
+        const totalSlides = Math.ceil(mundialesData.length / mundialesPorSlide);
 
         // Elementos del DOM
         const slider = document.getElementById('mundiales-slider');
@@ -462,9 +519,9 @@ session_start();
                 card.className = 'mundial-card';
                 card.innerHTML = `
                     <div class="mundial-imagen">
-                        <img src="${mundial.imagen}" alt="${mundial.nombre}">
+                        <img src="${mundial.imagen}" alt="${mundial.nombre}" onerror="this.src='img/default-mundial.jpg'">
                         <div class="mundial-logo">
-                            <img src="${mundial.logo}" alt="Logo ${mundial.nombre}">
+                            <img src="${mundial.logo}" alt="Logo ${mundial.nombre}" onerror="this.src='img/default-logo.jpg'">
                         </div>
                     </div>
                     <div class="mundial-info">
@@ -525,7 +582,7 @@ session_start();
 
         // Función para filtrar mundiales
         function filtrarMundiales(filtro) {
-            let mundialesFiltrados = [...mundiales];
+            let mundialesFiltrados = [...mundialesData];
             
             switch(filtro) {
                 case 'recientes':
@@ -575,7 +632,7 @@ session_start();
         });
 
         // Inicializar
-        renderMundiales(mundiales);
+        renderMundiales(mundialesData);
         goToSlide(0);
     </script>
 </body>

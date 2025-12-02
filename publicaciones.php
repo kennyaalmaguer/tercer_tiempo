@@ -1,5 +1,44 @@
 <?php
 session_start();
+require_once 'config/database.php';
+
+$user_id = $_SESSION['user_id'] ?? null;
+$user_nombre = $_SESSION['user_nombre'] ?? 'invitado'; 
+$user_foto_perfil = $_SESSION['user_foto'] ?? 'img/profile2.jpg'; 
+
+// --- 1. Obtención de Categorías ---
+$categorias = [];
+try {
+    global $pdo;
+    $sql_categorias = "SELECT id_categoria, nombre FROM categorias WHERE activo = 1 ORDER BY nombre ASC";
+    $stmt_c = $pdo->query($sql_categorias);
+    $categorias = $stmt_c->fetchAll();
+} catch (PDOException $e) {
+    // Manejo de error silencioso
+}
+
+// --- 2. Obtención de Mundiales ---
+$mundiales_list = [];
+try {
+    global $pdo;
+    $sql_mundiales = "SELECT id_mundial, nombre, año FROM mundiales WHERE activo = 1 ORDER BY año DESC";
+    $stmt_m = $pdo->query($sql_mundiales);
+    $mundiales_list = $stmt_m->fetchAll();
+} catch (PDOException $e) {
+    // Manejo de error silencioso
+}
+
+// --- 3. Obtención de Selecciones ---
+$selecciones_list = [];
+try {
+    global $pdo;
+    $sql_selecciones = "SELECT id_seleccion, nombre FROM selecciones ORDER BY nombre ASC";
+    $stmt_s = $pdo->query($sql_selecciones);
+    $selecciones_list = $stmt_s->fetchAll();
+} catch (PDOException $e) {
+    // Manejo de error silencioso
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -25,12 +64,10 @@ session_start();
 
     <nav>
         <?php if (isset($_SESSION['user_id'])): ?>
-            <!-- Mostrar cuando el usuario ESTÁ logueado -->
             <a href="index.php">inicio</a>
             <a href="perfil.php">perfil</a>
             <a href="logout.php">cerrar sesión</a>
         <?php else: ?>
-            <!-- Mostrar cuando el usuario NO está logueado -->
             <a href="publicaciones.php">publicaciones</a>
             <a href="registro.php">registro</a>
             <a href="login.php">log in</a>
@@ -38,115 +75,179 @@ session_start();
     </nav>
 </header>
 
-<!-- segunda sección -->
 <section class="segunda-seccion">
-    <!-- espacio para otra sección -->
 </section>
 
-<!-- sección de categorías -->
 <section class="categorias-sec">
     <h2 class="categorias-titulo">categorías</h2>
     <div class="categorias-container">
-        <button class="categoria-btn active">todas</button>
-        <button class="categoria-btn">jugadas</button>
-        <button class="categoria-btn">entrevistas</button>
-        <button class="categoria-btn">partidos</button>
-        <button class="categoria-btn">estadísticas</button>
-        <button class="categoria-btn">asistentes</button>
-        <button class="categoria-btn">incidentes</button>
-        <button class="categoria-btn">polémicas</button>
-        <button class="categoria-btn">sedes</button>
-        <button class="categoria-btn">cultura</button>
+        <button class="categoria-btn active" data-categoria-id="0">todas</button>
+        
+        <?php
+        if ($categorias) {
+            foreach ($categorias as $categoria) {
+                $id = htmlspecialchars($categoria['id_categoria']);
+                $nombre = htmlspecialchars(strtolower($categoria['nombre']));
+                
+                echo "<button class=\"categoria-btn\" data-categoria-id=\"{$id}\">{$nombre}</button>";
+            }
+        } else {
+            echo "";
+        }
+        ?>
     </div>
 </section>
 
-<!-- sección para crear publicaciones -->
+<?php if (isset($_SESSION['user_id'])): ?>
 <section class="create-post-sec">
     <div class="create-post-container">
         <div class="create-post-box">
             <div class="create-post-header">
                 <div class="create-post-avatar">
-                    <img src="img/profile2.jpg" alt="avatar">
+                    <img src="<?php echo htmlspecialchars($user_foto_perfil); ?>" alt="avatar de perfil">
                 </div>
                 <div class="create-post-input">
-                    <textarea placeholder="¿qué estás pensando, naiela?"></textarea>
+                    <input 
+        type="text" 
+            id="post-title" 
+            class="post-title-input"
+            placeholder="agrega un título para tu publicación..."
+        >
+                    <textarea id="post-textarea" placeholder="¿qué estás pensando, <?php echo htmlspecialchars($user_nombre); ?>?"></textarea>
                 </div>
             </div>
             
-            <div class="image-preview" id="image-preview">
-                <img id="preview-img" src="" alt="vista previa">
-                <button class="remove-image" onclick="removeImage()">×</button>
-            </div>
-            
+            <div class="image-preview-multiple" id="image-preview-multiple"></div>
+            <div class="video-preview" id="video-preview"></div>
             <div class="create-post-options">
                 <div class="post-options">
                     <label for="image-upload" class="option-btn">
                         <i class="option-icon fas fa-image"></i>
                         <span>foto</span>
                     </label>
-                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                    <input type="file" id="image-upload" accept="image/*" multiple style="display: none;">
                     
                     <label for="video-upload" class="option-btn">
                         <i class="option-icon fas fa-video"></i>
                         <span>video</span>
                     </label>
-                    <input type="file" id="video-upload" accept="video/*" style="display: none;">
+                    <input type="file" id="video-upload" accept="video/*" multiple style="display: none;">
                     
-                    <div class="option-btn" onclick="alert('Selecciona una categoría')">
-                        <i class="option-icon fas fa-tag"></i>
-                        <span>categoría</span>
+                    <button type="button" class="option-btn" id="clear-images-btn">
+                        <i class="option-icon fas fa-trash"></i>
+                        <span>limpiar fotos</span>
+                    </button>
+                    
+                    <div class="option-btn select-option-btn" data-target="mundial">
+                        <i class="option-icon fas fa-trophy"></i>
+                        <span id="selected-mundial-name">mundial</span>
+                        <input type="hidden" id="selected-mundial-id" value="">
                     </div>
 
-                    <div class="option-btn" onclick="alert('Selecciona un mundial')">
-                        <i class="option-icon fas fa-trophy"></i>
-                        <span>mundial</span>
+                    <div class="option-btn select-option-btn" data-target="seleccion">
+                        <i class="option-icon fas fa-shirt"></i>
+                        <span id="selected-seleccion-name">selección</span>
+                        <input type="hidden" id="selected-seleccion-id" value="">
                     </div>
                 </div>
                 
-                <button class="publish-btn">publicar</button>
+                <button class="publish-btn" disabled>publicar</button>
+            </div>
+        </div>
+        
+        <div id="selection-modal" class="selection-modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h3 id="modal-title"></h3>
+                <div id="modal-options-container">
+                    
+                    <div id="mundial-options" class="options-group" style="display: none;">
+                        <?php if ($mundiales_list): ?>
+                            <?php foreach ($mundiales_list as $m): ?>
+                                <button class="selection-item mundial-item" 
+                                    data-id="<?= htmlspecialchars($m['id_mundial']) ?>" 
+                                    data-name="<?= htmlspecialchars("{$m['nombre']} {$m['año']}") ?>">
+                                    <?= htmlspecialchars("{$m['nombre']} {$m['año']}") ?>
+                                </button>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No hay mundiales activos.</p>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div id="seleccion-options" class="options-group" style="display: none;">
+                        <button class="selection-item seleccion-item" data-id="" data-name="NINGUNA SELECCIÓN">
+                            NINGUNA SELECCIÓN (Quitar Selección)
+                        </button>
+                        <?php if ($selecciones_list): ?>
+                            <?php foreach ($selecciones_list as $s): ?>
+                                <button class="selection-item seleccion-item" 
+                                    data-id="<?= htmlspecialchars($s['id_seleccion']) ?>" 
+                                    data-name="<?= htmlspecialchars(ucwords($s['nombre'])) ?>">
+                                    <?= htmlspecialchars(ucwords($s['nombre'])) ?>
+                                </button>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No hay selecciones activas.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+<?php endif; ?>
 
-<!-- sección de publicaciones -->
 <section class="publicaciones-sec">
     <div class="filtros">
         <div class="filtro-grupo">
             <span class="filtro-label">mundial:</span>
-            <select class="filtro-select">
-                <option>todos</option>
-                <option>Qatar 2022</option>
-                <option>Rusia 2018</option>
-                <option>Brasil 2014</option>
-                <option>Sudáfrica 2010</option>
-                <option>Alemania 2006</option>
+            <select class="filtro-select" id="filtro-mundial">
+                <option value="0">todos</option>
+                <?php if ($mundiales_list): ?>
+                    <?php foreach ($mundiales_list as $m): ?>
+                        <option value="<?= htmlspecialchars($m['id_mundial']) ?>">
+                            <?= htmlspecialchars("{$m['nombre']} {$m['año']}") ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </select>
         </div>
         
         <div class="filtro-grupo">
             <span class="filtro-label">selección:</span>
-            <select class="filtro-select">
-                <option>todas</option>
-                <option>Argentina</option>
-                <option>Brasil</option>
-                <option>Francia</option>
-                <option>España</option>
-                <option>Alemania</option>
+            <select class="filtro-select" id="filtro-seleccion">
+                <option value="0">todas</option>
+                <option value="ninguna">NINGUNA SELECCIÓN</option>
+                <?php if ($selecciones_list): ?>
+                    <?php foreach ($selecciones_list as $s): ?>
+                        <option value="<?= htmlspecialchars($s['id_seleccion']) ?>">
+                            <?= htmlspecialchars(ucwords($s['nombre'])) ?>
+                        </option>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </select>
         </div>
         
         <div class="filtro-grupo">
             <span class="filtro-label">ordenar por:</span>
-            <select class="filtro-select">
-                <option>más recientes</option>
-                <option>más populares</option>
-                <option>más comentados</option>
+            <select class="filtro-select" id="filtro-orden">
+                <option value="reciente">más recientes</option>
+                <option value="popular">más populares</option>
+                <option value="comentados">más comentados</option>
             </select>
+        </div>
+        
+        <div class="filtro-grupo">
+            <button class="filtro-btn" id="aplicar-filtros">
+                aplicar filtros
+            </button>
+            <button class="filtro-btn limpiar" id="limpiar-filtros">
+                limpiar
+            </button>
         </div>
     </div>
 
-    <!-- Publicación 1 - Jugadas -->
     <div class="post-carta">
         <div class="post-header">
             <div class="post-avatar">
@@ -186,14 +287,13 @@ session_start();
                 <i class="action-icon fas fa-comment"></i>
                 <span class="action-count">47</span>
             </div>
-            <div class="post-action share-btn">
-                <i class="action-icon fas fa-share-alt"></i>
-                <span class="action-count">compartir</span>
+            <div class="post-action view-btn">
+                <i class="action-icon fas fa-eye"></i>
+                <span class="action-count">1200</span>
             </div>
         </div>
     </div>
 
-    <!-- Publicación 2 - Estadísticas -->
     <div class="post-carta">
         <div class="post-header">
             <div class="post-avatar">
@@ -241,14 +341,13 @@ session_start();
                 <i class="action-icon fas fa-comment"></i>
                 <span class="action-count">32</span>
             </div>
-            <div class="post-action share-btn">
-                <i class="action-icon fas fa-share-alt"></i>
-                <span class="action-count">compartir</span>
+            <div class="post-action view-btn">
+                <i class="action-icon fas fa-eye"></i>
+                <span class="action-count">980</span>
             </div>
         </div>
     </div>
 
-    <!-- Publicación 3 - Polémicas -->
     <div class="post-carta">
         <div class="post-header">
             <div class="post-avatar">
@@ -290,9 +389,9 @@ session_start();
                 <i class="action-icon fas fa-comment"></i>
                 <span class="action-count">89</span>
             </div>
-            <div class="post-action share-btn">
-                <i class="action-icon fas fa-share-alt"></i>
-                <span class="action-count">compartir</span>
+            <div class="post-action view-btn">
+                <i class="action-icon fas fa-eye"></i>
+                <span class="action-count">1500</span>
             </div>
         </div>
     </div>

@@ -582,3 +582,310 @@ header nav a {
         flex: 1 0 calc(50% - 15px);
     }
 }
+
+/* Estilos para el Modal de Selección */
+.selection-modal {
+    display: none; /* Oculto por defecto */
+    position: fixed; /* Posición fija para superponer todo */
+    z-index: 1000; /* Alto z-index para estar por encima de otros elementos */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); /* Fondo semi-transparente */
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 15% del top y centrado */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Ancho del modal */
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#modal-options-container {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.selection-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: left;
+    transition: background-color 0.2s;
+    font-size: 14px;
+    text-transform: capitalize;
+}
+
+.selection-item:hover {
+    background-color: #FFD700; /* Color de hover similar a tu tema */
+    color: #b37700;
+    border-color: #FFD700;
+}
+
+.image-preview-multiple {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.preview-box {
+    width: 120px;
+    height: 120px;
+    position: relative;
+}
+
+.preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 25px;
+    height: 25px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0,0,0,.6);
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Añade esto a tu publicaciones.css */
+.selection-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #d2b48c;
+   margin: 10% auto 25% auto;
+    padding: 20px;
+    border: 2px solid #8b6b46;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.close-btn {
+    color: #5c3d1e;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #8b6b46;
+}
+
+#modal-title {
+    color: #5c3d1e;
+    font-family: 'The Youth', sans-serif;
+    text-align: center;
+    margin-bottom: 20px;
+    text-transform: lowercase;
+}
+
+.options-group {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.selection-item {
+    padding: 10px 15px;
+    background: rgba(255, 248, 235, 0.7);
+    border: 1px solid #8b6b46;
+    color: #5c3d1e;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.selection-item:hover {
+    background: #8b6b46;
+    color: white;
+}
+
+/* Estilo para los botones de selección cuando tienen algo elegido */
+.select-option-btn.active {
+    background: rgba(139, 107, 70, 0.3);
+}
+
+.select-option-btn span {
+    font-style: normal;
+}
+
+.select-option-btn.active span {
+    font-weight: bold;
+    font-style: normal;
+}
+
+
+.video-preview {
+    margin-top: 10px;
+}
+
+.video-preview video {
+    max-width: 100%;
+    max-height: 200px;
+    border: 1px solid #8b6b46;
+}
+
+/* Estilos para los botones de filtro */
+.filtro-btn {
+    background: rgba(210, 180, 140, 0.8);
+    border: 2px solid #8b6b46;
+    padding: 8px 15px;
+    color: #5c3d1e;
+    font-family: 'The Youth', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: lowercase;
+    margin-left: 10px;
+}
+
+.filtro-btn:hover {
+    background: #8b6b46;
+    color: white;
+}
+
+.filtro-btn.limpiar {
+    background: rgba(139, 107, 70, 0.5);
+    border-color: #5c3d1e;
+}
+
+.filtro-btn.limpiar:hover {
+    background: #5c3d1e;
+}
+
+.filtro-select {
+    background: rgba(210, 180, 140, 0.8);
+    border: 2px solid #8b6b46;
+    padding: 8px 15px;
+    color: #5c3d1e;
+    font-family: Arial, Helvetica, sans-serif;
+    
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.filtro-select:focus {
+    outline: none;
+    border-color: #5c3d1e;
+}
+
+.post-title-input {
+    background-color: #f5e3cb;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 8px;
+    border: none;
+      font-size: 24px;
+    margin: 0 0 10px 0;
+    color: #5c3d1e;
+    font-family: 'The Youth', sans-serif;
+    letter-spacing: 1px;
+ border: 1px solid #8b6b46;
+    font-size: 15px;
+    outline: none;
+    resize: none;
+    text-transform: lowercase;
+}
+
+.post-title-input:focus {
+    border-bottom: 2px solid #30260c;
+}
+
+/* Estilos para vista previa de videos múltiples */
+.videos-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.video-preview-box {
+    width: 150px;
+    position: relative;
+}
+
+.video-preview-box video {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 2px solid #8b6b46;
+    background: #000;
+}
+
+.remove-video {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 25px;
+    height: 25px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0,0,0,.6);
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-count-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: rgba(139, 107, 70, 0.8);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
